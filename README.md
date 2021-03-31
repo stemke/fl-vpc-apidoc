@@ -1,7 +1,12 @@
-# fl-vpc-apidoc
+# FL VPC API Docs
+
 Will use this space to submit the VPC API Doc automated test and results from Freelancer project.  Before you start, connect with project lead to understand the feedback template to use for issues, and get the list of methods to test.
 
-**Freelancer Results Template**
+## Resources
+
+* VPC API Docs site -> https://cloud.ibm.com/apidocs/vpc
+* Python SDK repository -> https://github.com/IBM/vpc-python-sdk/
+## Freelancer Results Template
 
 1. VPC API operation being tested (e.g.: `GET /vpcs/<id>`):
   
@@ -19,3 +24,7 @@ Examples:
 * Property `foo` was not present in the response but was marked required in the specification (and included in the example)
 * HTTP status code `202` was required by the specification but code `204` was returned
 * Property `bar` had value `Baz`, but only `baz` is allowed in the specification
+
+## Tests 
+* [] test 1
+* [] test 2
