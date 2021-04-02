@@ -27,6 +27,10 @@ Examples:
 * HTTP status code `202` was required by the specification but code `204` was returned
 * Property `bar` had value `Baz`, but only `baz` is allowed in the specification
 
-## Tests 
-* [] test 1
-* [] test 2
+## Test Endpoints 
+
+- `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/vpcs`
+- `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/subnets`
+- `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/keys`
+- `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/instances`
+- `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/floating_ips`
