@@ -1,48 +1,41 @@
 import requests
+import json
 
 
-def test_login():
-    assert 1==1
-    # tests t ogo here once all docs has been received
-
-
-# from ibm_vpc import VpcV1
-# from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-# from ibm_cloud_sdk_core import ApiException
-
-# authenticator = IAMAuthenticator("RwGld3KPE3UsXoDlFypWSdLLP_6Vt8zaOREOtDY46x3h")
-# service = VpcV1('2020-06-02', authenticator=authenticator)
-
-# #  Listing VPCs
-# print("List VPCs")
-# try:
-#     vpcs = service.list_vpcs().get_result()['vpcs']
-# except ApiException as e:
-#   print("List VPC failed with status code " + str(e.code) + ": " + e.message)
-# for vpc in vpcs:
-#     print(vpc['id'], "\t",  vpc['name'])
-
-
-API_KEY = "RwGld3KPE3UsXoDlFypWSdLLP_6Vt8zaOREOtDY46x3h"
-data = {
-    "apikey": API_KEY,
-    "grant_type": "urn:ibm:params:oauth:grant-type:apikey",
-}
+with open("iam_token.txt") as f:
+    iam_token = f.read().strip()
 
 HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "application/json"
+    "Accept": "application/json",
+    "Authorization": f"Bearer {iam_token}",
+    "token_type": "Bearer",
 }
 
 session = requests.Session()
 session.headers = HEADERS
 
-ACCESS_TOKEN_URL = "https://iam.cloud.ibm.com/identity/token"
-res = session.post(ACCESS_TOKEN_URL, data=data).json()
-access_token = res.get("access_token")
-print(access_token)
+VPC_API_ENDPOINT = "https://us-south.iaas.cloud.ibm.com"
 
-session.headers.update({"Authorization": API_KEY})
-VPC_API_ENDPOINT = "https://eu-gb.iaas.cloud.ibm.com"
-r = session.get(f"{VPC_API_ENDPOINT}/v1/instances?version=2021-01-26&generation=1&apikey={access_token}", )
-print(r.text)
+# GET /vpcs
+def get_vpcs():
+    r = session.get(f"{VPC_API_ENDPOINT}/v1/vpcs?version=2021-01-01&generation=2")
+    print(r.json())
+
+# GET /vps/<id>
+def get_vpcs_detail():
+    _id = "r006-1e1ef30a-6c4c-4ce8-b805-08cba781eb7a"
+    r = session.get(f"{VPC_API_ENDPOINT}/v1/vpcs/{_id}?version=2021-01-01&generation=2")
+    print(r.json())    
+
+
+# POST /vpcs
+def post_vpcs():
+    payload = json.dumps({"name": "vpc-1"})
+    r = session.post(f"{VPC_API_ENDPOINT}/v1/vpcs?version=2021-01-01&generation=2", data=payload)
+    print(r.json())
+
+
+# get_vpcs()
+# post_vpcs()
+# get_vpcs_detail()
