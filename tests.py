@@ -3,7 +3,7 @@ import json
 
 
 with open("iam_token.txt") as f:
-    iam_token = f.read().strip()
+    iam_token = f.read().replace("Bearer", "").strip()
 
 HEADERS = {
     "Content-Type": "application/x-www-form-urlencoded",

@@ -4,6 +4,12 @@
 
 Will use this space to submit the VPC API Doc automated test and results from Freelancer project.  Before you start, connect with project lead to understand the feedback template to use for issues, and get the list of methods to test.
 
+> **Note**: when testing, please add your geenrated iam_token into the `iam_token.txt`. You can generate it using the command below
+
+```sh
+$ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
+```
+
 ## Resources
 
 * VPC API Docs site -> https://cloud.ibm.com/apidocs/vpc

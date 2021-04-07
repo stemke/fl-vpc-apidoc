@@ -138,4 +138,3 @@ __MACOSX/
 .vscode/
 apikey.json
 curl-test.txt
-iam_token.txt
