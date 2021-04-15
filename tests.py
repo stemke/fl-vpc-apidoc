@@ -1,6 +1,9 @@
 import requests
 import json
 
+with open("./openapi.json") as f:
+    api_spec = json.load(f)
+
 
 with open("iam_token.txt") as f:
     iam_token = f.read().replace("Bearer", "").strip()

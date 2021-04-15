@@ -33,7 +33,7 @@ jobs:
       
     - name: Run tests
       run: |
-        pytest tests.py
+        pytest
         
       env:
         CLOUD_KEY: "testkey"
