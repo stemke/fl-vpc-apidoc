@@ -17,7 +17,7 @@ $ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
 ## Freelancer Results Template
 
 1. VPC API operation being tested (e.g.: `GET /vpcs/<id>`):
-  
+
     Sequence of `curl` commands used to test the operation:
 
 2. Was the final `curl` command the same as the one in the API specification?  (Yes/No)
@@ -33,7 +33,7 @@ Examples:
 * HTTP status code `202` was required by the specification but code `204` was returned
 * Property `bar` had value `Baz`, but only `baz` is allowed in the specification
 
-## Test Endpoints 
+## Test Endpoints
 
 - `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/vpcs`
 - `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/subnets`
@@ -50,3 +50,8 @@ Examples:
 | GET `/vpcs/<id>` | 2021-04-07  |   n/a                | Get's a specific vpc using the id. works as expected |
 | POST `/vpcs/`    | 2021-04-07  |   n/a                | Creates a new VPC once the name is passes as json in the payload. works as expected |
 
+
+## Observations
+
+- API uses `iam_token` as opposed to `api_key` mentioned in the documentation.
+-
