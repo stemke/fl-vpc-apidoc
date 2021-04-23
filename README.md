@@ -53,5 +53,5 @@ Examples:
 
 ## Observations
 
-- API uses `iam_token` as opposed to `api_key` mentioned in the documentation.
--
+- Documentation isn't very clear on how to use or generate `iam_token`
+- ambiguous param specifier (`routing_table.id` and `routing_table.name`) for `GET /v1/subnets` but i'm assuming it tan take either the routing table name or id as parameter.
