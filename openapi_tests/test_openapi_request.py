@@ -30,8 +30,9 @@ session.headers = HEADERS
 
 VPC_API_ENDPOINT = "https://us-south.iaas.cloud.ibm.com"
 
+REQUIRED_PARAMS = ["version", "generation"]
 
-def check_required_params(request, required_params):
+def check_required_params(request, required_params=REQUIRED_PARAMS):
     query_params = dict(parse_qsl(urlparse(request.url).query))
 
     # check that the request params contains the required params in the api spec
@@ -50,15 +51,13 @@ def test_get_vpcs():
     res = session.get(f"{VPC_API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2")
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
-    required_params = ["version", "generation"]
-
     optional_params = ["start", "limit", "resource_group", "classic_access"]
 
-    check_required_params(res, required_params)
+    check_required_params(res)
 
     for k, v in query_params.items():
         # check that query has the correct params
-        assert k in (required_params + optional_params)
+        assert k in (REQUIRED_PARAMS + optional_params)
         # check if query params has any value
         assert v
 
@@ -105,7 +104,7 @@ def test_post_vpcs():
         if k == "resource_group":
             assert re.match(r"^[0-9a-f]{32}$", v)
 
-    check_required_params(res, required_params)
+    check_required_params(res)
 
 
 # PATCH /vpcs/{id}
@@ -116,3 +115,4 @@ def test_patch_vpc_by_id():
     )
 
     assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
+    check_required_params(res)
