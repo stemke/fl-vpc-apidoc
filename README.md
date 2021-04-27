@@ -26,7 +26,9 @@ $ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
 
 3. Was the output of the VPC API operation being tested compatible with the specification and/or specification example output? (Yes/No)
 
-    If "No": list each incompatibility. If there was no specification example, list a validexample here.
+    If "No": list each incompatibility. 
+    
+4. If there was no specification example output (and there should be), list a valid response/return example that should be added to the spec output.
 
 Examples:
 * Property `foo` was not present in the response but was marked required in the specification (and included in the example)
