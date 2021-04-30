@@ -1,6 +1,7 @@
 from openapi_tests.helpers import API_ENDPOINT, check_required_params, REQUIRED_PARAMS, session
 from urllib.parse import parse_qsl, urlparse
 import re
+import json
 
 
 # TESTS STARTS HERE
@@ -32,10 +33,10 @@ def test_post_vpcs():
     body = {"name": "test"}
 
     res = session.post(
-        f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2", data=body
+        f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2", json=body
     )
 
-    optional_body_params = [
+    optional_body_data = [
         "VPCPrototype",
         "address_prefix_management",
         "classic_access",
@@ -45,7 +46,7 @@ def test_post_vpcs():
 
     request_body = dict(parse_qsl(res.request.body))
     for k, v in request_body.items():
-        assert k in optional_body_params
+        assert k in optional_body_data
 
         if k == "address_prefix_management":
             assert v in ["auto", "manual"]
@@ -70,13 +71,14 @@ def test_patch_vpc_by_id():
     body = {"name": "test"}
 
     res = session.post(
-        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2", data=body
+        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2", json=body
     )
 
     assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
     check_required_params(res)
 
-    request_body = dict(parse_qsl(res.request.body))
+    request_body = json.loads(res.request.body)
+
     name = request_body.get("name", '')
     assert "name" in request_body.keys()
     assert re.match(r'^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$', name)
