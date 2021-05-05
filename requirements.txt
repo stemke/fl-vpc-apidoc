@@ -1,4 +1,3 @@
 pytest==6.2.2
 requests==2.25.1
-ibm-vpc==0.4.1
-openapi-core
+requests_mock

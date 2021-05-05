@@ -15,7 +15,8 @@ def test_get_subnets():
 		"limit",
 		"resource_group.id",
 		"routing_table.id",
-		"routing_table.name"
+		"routing_table.name",
+        "ipv4_cidr_block"
 	]
 
     check_required_params(res)
@@ -53,7 +54,12 @@ def test_post_subnets():
         "network_acl",
         "public_gateway",
         "resource_group",
-        "routing_table"
+        "routing_table",
+
+        # to double check
+        "ipv4_cidr_block",
+        "zone",
+        "vpc"
     ]
 
     required_body_data = ["vpc"]
@@ -63,52 +69,53 @@ def test_post_subnets():
         assert param in request_body.keys()
 
     for vpc_param in request_body["vpc"]:
-        print(vpc_param)
-#     for k, v in request_body.items():
-#         assert k in optional_body_data
+        assert "id" in vpc_param
 
-#         if k == "address_prefix_management":
-#             assert v in ["auto", "manual"]
+    for k, v in request_body.items():
+        assert k in optional_body_data
 
-#         if k == "classic_access":
-#             assert v in ["true", "false"]
+        if k == "address_prefix_management":
+            assert v in ["auto", "manual"]
 
-#         if k == "name":
-#             assert 1 <= len(v) <= 63
-#             assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", v)
+        if k == "classic_access":
+            assert v in ["true", "false"]
 
-#         if k == "resource_group":
-#             assert re.match(r"^[0-9a-f]{32}$", v)
+        if k == "name":
+            assert 1 <= len(v) <= 63
+            assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", v)
 
-#     check_required_params(res)
+        if k == "resource_group":
+            assert re.match(r"^[0-9a-f]{32}$", v)
 
-
-# # PATCH /subnets/{id}
-# def test_patch_subnet_by_id():
-
-#     subnet_id = "123"
-#     body = {"name": "test"}
-
-#     res = session.post(
-#         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2", data=body
-#     )
-
-#     assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
-#     check_required_params(res)
-
-#     request_body = dict(parse_qsl(res.request.body))
-#     name = request_body.get("name", '')
-#     assert "name" in request_body.keys()
-#     assert re.match(r'^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$', name)
-#     assert 1 <= len(name) <= 63
+    check_required_params(res)
 
 
-# # DELETE /subnets/{id}
-# def test_delete_subnet_by_id():
-#     subnet_id = "123"
+# PATCH /subnets/{id}
+def test_patch_subnet_by_id():
 
-#     res = session.post(
-#         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2")
+    subnet_id = "0717-e7127621-d990-42a8-bb4b-7365402aab33"
+    body = {"name": "test"}
 
-#     assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
-#     check_required_params(res)
+    res = session.patch(
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2", data=body
+    )
+
+    assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
+    check_required_params(res)
+
+    request_body = dict(parse_qsl(res.request.body))
+    name = request_body.get("name", '')
+    assert "name" in request_body.keys()
+    assert re.match(r'^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$', name)
+    assert 1 <= len(name) <= 63
+
+
+# DELETE /subnets/{id}
+def test_delete_subnet_by_id():
+    subnet_id = "0717-e7127621-d990-42a8-bb4b-7365402aab33"
+
+    res = session.delete(
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2")
+
+    assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
+    check_required_params(res)

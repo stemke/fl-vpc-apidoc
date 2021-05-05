@@ -4,10 +4,46 @@
 
 Will use this space to submit the VPC API Doc automated test and results from Freelancer project.  Before you start, connect with project lead to understand the feedback template to use for issues, and get the list of methods to test.
 
-> **Note**: when testing, please add your geenrated iam_token into the `iam_token.txt`. You can generate it using the command below
+
+## Generating iam_token
+
+### Via IBM Cloud Console
 
 ```sh
 $ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
+```
+
+### Via python requests library
+
+```python
+import requests
+
+def get_iam_token():
+    DEFAULT_IAM_URL = 'https://iam.cloud.ibm.com'
+    CONTENT_TYPE = 'application/x-www-form-urlencoded'
+    OPERATION_PATH = "/identity/token"
+    REQUEST_TOKEN_GRANT_TYPE = 'urn:ibm:params:oauth:grant-type:apikey'
+    REQUEST_TOKEN_RESPONSE_TYPE = 'cloud_iam'
+    TOKEN_NAME = 'access_token'
+
+    apikey = os.getenv('API_KEY', 'api_token_here')
+
+    headers = {
+        'Content-type': CONTENT_TYPE,
+        'Accept': 'application/json'
+    }
+
+    data = {
+        'grant_type': REQUEST_TOKEN_GRANT_TYPE,
+        'apikey': apikey,
+        'response_type': REQUEST_TOKEN_RESPONSE_TYPE
+    }
+
+    req = requests.post(f"{DEFAULT_IAM_URL}{OPERATION_PATH}", headers=headers, data=data).json()
+    return req.get(TOKEN_NAME)
+
+# My IAM TOKEN
+iam_token = get_iam_token()
 ```
 
 ## Resources
@@ -26,8 +62,8 @@ $ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
 
 3. Was the output of the VPC API operation being tested compatible with the specification and/or specification example output? (Yes/No)
 
-    If "No": list each incompatibility. 
-    
+    If "No": list each incompatibility.
+
 4. If there was no specification example output (and there should be), list a valid response/return example that should be added to the spec output.
 
 Examples:
@@ -56,4 +92,4 @@ Examples:
 ## Observations
 
 - Documentation isn't very clear on how to use or generate `iam_token`
-- ambiguous param specifier (`routing_table.id` and `routing_table.name`) for `GET /v1/subnets` but i'm assuming it tan take either the routing table name or id as parameter.
+- Documentation doesn't specify that the purpose of using the `apikey` is so that you can generate the `iam_token` and neither dpes it show how to do it.

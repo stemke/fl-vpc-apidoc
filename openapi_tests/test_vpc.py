@@ -1,8 +1,13 @@
-from openapi_tests.helpers import API_ENDPOINT, check_required_params, REQUIRED_PARAMS, session
+from openapi_tests.helpers import (
+    API_ENDPOINT,
+    check_required_params,
+    REQUIRED_PARAMS,
+    session,
+)
+
 from urllib.parse import parse_qsl, urlparse
 import re
 import json
-
 
 # TESTS STARTS HERE
 # GET /vpcs
@@ -28,9 +33,18 @@ def test_get_vpcs():
             assert v in ["true", "false"]
 
 
+# GET /vpcs/id
+def test_vpc_by_id():
+  vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
+  res = session.get(f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2")
+
+  check_required_params(res)
+
+
+
 # POST /vpcs
 def test_post_vpcs():
-    body = {"name": "test"}
+    body = {"name": "r006-192412ca-4ab4-4e00-a852-188047f8698d"}
 
     res = session.post(
         f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2", json=body
@@ -66,11 +80,10 @@ def test_post_vpcs():
 
 # PATCH /vpcs/{id}
 def test_patch_vpc_by_id():
+    vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
+    body = {"name": "test2_updated"}
 
-    vpc_id = "123"
-    body = {"name": "test"}
-
-    res = session.post(
+    res = session.patch(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2", json=body
     )
 
@@ -78,8 +91,8 @@ def test_patch_vpc_by_id():
     check_required_params(res)
 
     request_body = json.loads(res.request.body)
+    name = res.json().get("name", '')
 
-    name = request_body.get("name", '')
     assert "name" in request_body.keys()
     assert re.match(r'^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$', name)
     assert 1 <= len(name) <= 63
@@ -87,10 +100,12 @@ def test_patch_vpc_by_id():
 
 # DELETE /vpcs/{id}
 def test_delete_vpc_by_id():
-    vpc_id = "123"
+    vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
 
-    res = session.post(
+    res = session.delete(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2")
 
-    assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
     check_required_params(res)
+
+    assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
+    assert res.status_code == 204
