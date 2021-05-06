@@ -64,7 +64,7 @@ def test_post_subnets():
 
     required_body_data = ["vpc"]
     request_body = json.loads(res.request.body)
-
+    
     for param in required_body_data:
         assert param in request_body.keys()
 
