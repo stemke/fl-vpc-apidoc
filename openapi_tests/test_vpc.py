@@ -22,6 +22,7 @@ def test_get_vpcs():
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
     optional_params = ["start", "limit", "resource_group.id", "classic_access"]
+    valid_vpc_keys = ['classic_access', 'created_at', 'crn', 'default_network_acl', 'default_routing_table', 'default_security_group', 'href', 'id', 'name', 'resource_group', 'status', 'cse_source_ips']
 
     # -- testing request params
     check_required_params(res)
@@ -54,6 +55,11 @@ def test_get_vpcs():
             routing_table_keys = ["href", "id", "name", "resource_type", "deleted"]
 
             for vpc in v:
+                for key in vpc.keys():
+                    print(key)
+                # print()
+                    assert key in valid_vpc_keys
+
                 assert isinstance(vpc.get("classic_access"), bool)
                 assert is_date(vpc.get("created_at"))
                 assert vpc.get("crn").startswith("crn:")
@@ -80,6 +86,8 @@ def test_get_vpcs():
 
                     if rt_key == "deleted":
                         assert re.match(URL_REGEX, rt_val.get("more_info"))
+
+
         else:
             assert v
 

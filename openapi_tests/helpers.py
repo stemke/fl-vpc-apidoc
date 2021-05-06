@@ -47,7 +47,7 @@ def is_date(string, fuzzy=False):
         return False
 
 
-def get_iam_token():
+def get_iam_token(api_token="api_token_here"):
     DEFAULT_IAM_URL = "https://iam.cloud.ibm.com"
     CONTENT_TYPE = "application/x-www-form-urlencoded"
     OPERATION_PATH = "/identity/token"
@@ -55,7 +55,7 @@ def get_iam_token():
     REQUEST_TOKEN_RESPONSE_TYPE = "cloud_iam"
     TOKEN_NAME = "access_token"
 
-    apikey = os.getenv("API_KEY", "api_token_here")
+    apikey = os.getenv("API_KEY", api_token)
 
     headers = {"Content-type": CONTENT_TYPE, "Accept": "application/json"}
 

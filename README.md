@@ -93,3 +93,6 @@ Examples:
 
 - Documentation isn't very clear on how to use or generate `iam_token`
 - Documentation doesn't specify that the purpose of using the `apikey` is so that you can generate the `iam_token` and neither dpes it show how to do it.
+
+  **GET /v1/vpcs**
+  * `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.

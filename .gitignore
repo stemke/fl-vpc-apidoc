@@ -139,3 +139,5 @@ __MACOSX/
 apikey.json
 curl-test.txt
 id_rs*
+
+queries.py
