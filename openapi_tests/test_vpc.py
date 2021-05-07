@@ -37,7 +37,7 @@ def test_get_vpcs():
             assert v.isdigit()
             assert int(v) in range(1, 101)
 
-        if k == "classic_access":
+        elif k == "classic_access":
             assert v in ["true", "false"]
 
     # -- testing response
@@ -78,8 +78,7 @@ def test_vpc_by_id():
     check_required_params(res)
 
     # testing response
-    data = res.json()
-    check_valid_vpc(data)
+    check_valid_vpc(res.json())
 
 
 # POST /vpcs
@@ -98,25 +97,24 @@ def test_post_vpcs():
         "resource_group",
     ]
 
-    request_body = dict(parse_qsl(res.request.body))
-
-    for k, v in request_body.items():
+    for k, v in body.items():
         assert k in optional_body_data
 
         if k == "address_prefix_management":
             assert v in ["auto", "manual"]
 
-        if k == "classic_access":
+        elif k == "classic_access":
             assert v in ["true", "false"]
 
-        if k == "name":
+        elif k == "name":
             assert 1 <= len(v) <= 63
             assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", v)
 
-        if k == "resource_group":
-            assert re.match(r"^[0-9a-f]{32}$", v)
+        elif k == "resource_group":
+            assert re.match(r"^[0-9a-f]{32}$", v.get('id'))
 
     check_required_params(res)
+    check_valid_vpc(res.json())
 
 
 # PATCH /vpcs/{id}
@@ -130,13 +128,13 @@ def test_patch_vpc_by_id():
 
     assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
     check_required_params(res)
+    data = res.json()
+    name = data.get("name", "")
 
-    request_body = json.loads(res.request.body)
-    name = res.json().get("name", "")
-
-    assert "name" in request_body.keys()
+    assert "name" in body.keys()
     assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", name)
     assert 1 <= len(name) <= 63
+    check_valid_vpc(data)
 
 
 # DELETE /vpcs/{id}

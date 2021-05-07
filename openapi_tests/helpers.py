@@ -13,40 +13,53 @@ API_ENDPOINT = "https://us-south.iaas.cloud.ibm.com"
 URL_REGEX = r'^http(s)?:\/\/([^\/?#]*)([^?#]*)(\?([^#]*))?(#(.*))?$'
 ID_REGEX = r'^[-0-9a-z_]+$'
 NAME_REGEX = r'^-?([a-z]|[a-z][-a-z0-9]*[a-z0-9]|[0-9][-a-z0-9]*([a-z]|[-a-z][-a-z0-9]*[a-z0-9]))$'
+IPV4_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'
 
-NETWORK_ACL_KEYS = [
+
+RESPONSE_KEYS = [
+    'href',
+    'id',
+    'name'
+]
+
+NETWORK_ACL_KEYS = RESPONSE_KEYS + [
     "crn",
-    "href",
-    "id",
-    "name",
-    "deleted"
+    "deleted",
 ]
 
-ROUTING_TABLE_KEYS = [
-    "href",
-    "id",
-    "name",
+ROUTING_TABLE_KEYS = RESPONSE_KEYS + [
     "resource_type",
-    "deleted"
+    'deleted'
 ]
 
-VALID_VPC_KEYS = [
-    "classic_access",
+NET_KEYS = RESPONSE_KEYS + [
     "created_at",
     "crn",
-    "default_network_acl",
-    "default_routing_table",
-    "default_security_group",
-    "href",
-    "id",
-    "name",
     "resource_group",
     "status",
-    "cse_source_ips",
-
     # doesn't exist in api spec
     'resource_type'
 ]
+
+VALID_VPC_KEYS = NET_KEYS + [
+    "classic_access",
+    "cse_source_ips",
+    "default_network_acl",
+    "default_routing_table",
+    "default_security_group",
+]
+
+SUBNET_KEYS = NET_KEYS + [
+    'ip_version',
+    'network_acl',
+    'available_ipv4_address_count',
+    'ipv4_cidr_block',
+    'routing_table',
+    'total_ipv4_address_count',
+    'vpc',
+    'zone',
+]
+
 
 def check_valid_keys(keys, param):
     for key, val in param.items():
@@ -55,15 +68,53 @@ def check_valid_keys(keys, param):
 
         if key == 'crn':
             assert val.startswith('crn:')
-        if key == 'href':
+
+        elif key == 'href':
             assert re.match(URL_REGEX, val)
-        if key == 'id':
+
+        elif key == 'id':
             assert re.match(ID_REGEX, val)
-        if key == 'name':
+
+        elif key == 'name':
             assert 1 <= len(val) <= 63
             assert re.match(NAME_REGEX, val)
-        if key == 'deleted':
+
+        elif key == 'deleted':
             assert re.match(URL_REGEX, val.get('more_info'))
+
+def check_valid_resource_group(resource_group):
+    for k, v in resource_group.items():
+        assert k in RESPONSE_KEYS
+
+        if k == 'href':
+            assert re.match(URL_REGEX, v)
+
+        elif k == "id":
+            assert re.match(r'^[0-9a-f]{32}$', v)
+
+        elif k == "name":
+            assert re.match(r'^[a-zA-Z0-9-_ ]+$', v)
+            assert 1 <= len(v) <= 40
+
+def check_valid_routing_table(rt):
+    for rk in ['id', 'href', 'name', 'resource_type']:
+        assert rk in rt.keys()
+
+    for k, v in rt.items():
+        assert k in ROUTING_TABLE_KEYS
+
+        if k == 'href':
+            assert re.match(URL_REGEX, v)
+
+        elif k == 'id':
+            assert re.match(ID_REGEX, v)
+
+        elif k == 'name':
+            assert 1 <= len(v) <= 63
+            assert re.match(NAME_REGEX, v)
+
+        elif k == 'deleted':
+            assert re.match(URL_REGEX, v.get('more_info'))
 
 def check_valid_vpc(vpc):
     for key in vpc.keys():
@@ -79,17 +130,57 @@ def check_valid_vpc(vpc):
     for rt_key, rt_val in vpc.get("default_routing_table").items():
         assert rt_key in ROUTING_TABLE_KEYS
         assert rt_val
+
         if rt_key == "href":
             assert re.match(URL_REGEX, rt_val)
-        if rt_key == "id":
+
+        elif rt_key == "id":
             assert re.match(ID_REGEX, rt_val)
-        if rt_key == "name":
+
+        elif rt_key == "name":
             assert 1 <= len(rt_val) <= 63
             assert re.match(NAME_REGEX, rt_val)
-        if rt_key == "resource_type":
+
+        elif rt_key == "resource_type":
             assert rt_val in ["routing_table"]
-        if rt_key == "deleted":
+
+        elif rt_key == "deleted":
             assert re.match(URL_REGEX, rt_val.get("more_info"))
+
+
+def check_valid_subnet(subnet):
+    for key in subnet.keys():
+        assert key in SUBNET_KEYS
+
+    assert subnet.get('available_ipv4_address_count') > -1
+    assert is_date(subnet.get("created_at"))
+    assert subnet.get("crn").startswith("crn:")
+    assert re.match(URL_REGEX, subnet.get('href'))
+
+    assert re.match(ID_REGEX, subnet.get('id'))
+    assert 1 <= len(subnet.get('id', '')) <= 64
+
+    assert subnet.get('ip_version') in ['ipv4']
+    assert re.match(IPV4_REGEX, subnet.get('ipv4_cidr_block'))
+
+    assert 1 <= len(subnet.get('name')) <= 63
+    assert re.match(NAME_REGEX, subnet.get('name'))
+
+    check_valid_keys(NETWORK_ACL_KEYS, subnet.get("network_acl"))
+    check_valid_resource_group(subnet.get('resource_group'))
+    check_valid_routing_table(subnet.get("routing_table"))
+
+    assert subnet.get('status') in ['available', 'deleting', 'failed', 'pending']
+    assert subnet.get('total_ipv4_address_count') > 0
+    check_valid_keys(RESPONSE_KEYS + ['crn', 'resource_type'], subnet.get('vpc'))
+
+    deleted = subnet.get('deleted')
+    if deleted:
+        assert re.match(URL_REGEX, deleted.get('more_info'))
+
+    check_valid_keys(['href', 'name'], subnet.get('zone'))
+    # check_valid_keys(NETWORK_ACL_KEYS, subnet.get('public_gateway'))
+
 
 def is_date(string, fuzzy=False):
     """

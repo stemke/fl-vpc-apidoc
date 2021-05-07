@@ -97,6 +97,10 @@ Examples:
 
 - Documentation isn't very clear on how to use or generate `iam_token`
 - Documentation doesn't specify that the purpose of using the `apikey` is so that you can generate the `iam_token` and neither dpes it show how to do it.
+- id regex is in the form `^[-0-9a-z_]+$`. Since the example is meant to be a unique identifier and an example given is `7ec86020-1c6e-4889-b3f0-a15f2e50f87e`, I would have thought the regular expression should be ``^[-0-9a-f_]+$`` instead. This is the case for
+  - `PUT /subnets/{id}`,
+  - `subnets[{'id': 'id_val'}]` on `GET /subnets/`,
+
 
     **GET /v1/vpcs**
     * `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.
@@ -122,3 +126,7 @@ r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
           'resource_group.id': 'ea28d6d5de624c9e974fda9ecd3f4262'
       }).json()
 ```
+
+
+**GET /v1/subnets**
+* `resource_type` is missing from the api spec response parameters.
