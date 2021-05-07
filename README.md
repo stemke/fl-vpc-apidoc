@@ -18,7 +18,11 @@ $ iam_token=$(ibmcloud iam oauth-tokens | awk -F: '{ print $2}')
 ```python
 import requests
 
-def get_iam_token():
+def get_iam_token(api_token='your_api_key'):
+    '''
+    param: `api_token` parameter can be passed as method argument or from environment variables
+    '''
+
     DEFAULT_IAM_URL = 'https://iam.cloud.ibm.com'
     CONTENT_TYPE = 'application/x-www-form-urlencoded'
     OPERATION_PATH = "/identity/token"
@@ -26,7 +30,7 @@ def get_iam_token():
     REQUEST_TOKEN_RESPONSE_TYPE = 'cloud_iam'
     TOKEN_NAME = 'access_token'
 
-    apikey = os.getenv('API_KEY', 'api_token_here')
+    apikey = os.getenv('API_KEY', api_token)
 
     headers = {
         'Content-type': CONTENT_TYPE,
@@ -94,5 +98,27 @@ Examples:
 - Documentation isn't very clear on how to use or generate `iam_token`
 - Documentation doesn't specify that the purpose of using the `apikey` is so that you can generate the `iam_token` and neither dpes it show how to do it.
 
-  **GET /v1/vpcs**
-  * `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.
+    **GET /v1/vpcs**
+    * `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.
+
+    **GET /v1/vpcs/{id}**
+    * `resource_type` is missing from the api spec response parameters
+
+    **POST /v1/vpcs/**
+    * `resource_group` needs to be passed as dict rather than by id. See example below
+
+```python
+# correct
+r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
+        headers=HEADERS,
+        json={
+            'resource_group': {'id':'ea28d6d5de624c9e974fda9ecd3f4262'}
+    }).json()
+
+# wrong
+r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
+      headers=HEADERS,
+      json={
+          'resource_group.id': 'ea28d6d5de624c9e974fda9ecd3f4262'
+      }).json()
+```

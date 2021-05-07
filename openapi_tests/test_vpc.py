@@ -5,6 +5,7 @@ from openapi_tests.helpers import (
     session,
     is_date,
     check_valid_keys,
+    check_valid_vpc,
     URL_REGEX,
     ID_REGEX,
     NAME_REGEX,
@@ -22,7 +23,6 @@ def test_get_vpcs():
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
     optional_params = ["start", "limit", "resource_group.id", "classic_access"]
-    valid_vpc_keys = ['classic_access', 'created_at', 'crn', 'default_network_acl', 'default_routing_table', 'default_security_group', 'href', 'id', 'name', 'resource_group', 'status', 'cse_source_ips']
 
     # -- testing request params
     check_required_params(res)
@@ -42,57 +42,30 @@ def test_get_vpcs():
 
     # -- testing response
     required_response_keys = ["limit", "first", "total_count", "vpcs"]
-
+    response_keys = required_response_keys  + ["next"]
     data = res.json()
+
+    for k in required_response_keys:
+        assert k in data.keys()
+
     for k, v in data.items():
-        assert k in required_response_keys
+        assert k in response_keys
 
         if k == "total_count":
             assert v >= 0
 
         elif k == "vpcs" and v:
-            network_acl_keys = ["crn", "href", "id", "name", "deleted"]
-            routing_table_keys = ["href", "id", "name", "resource_type", "deleted"]
-
             for vpc in v:
-                for key in vpc.keys():
-                    print(key)
-                # print()
-                    assert key in valid_vpc_keys
+                check_valid_vpc(vpc)
 
-                assert isinstance(vpc.get("classic_access"), bool)
-                assert is_date(vpc.get("created_at"))
-                assert vpc.get("crn").startswith("crn:")
+        elif k == "limit":
+            assert 1 <= v <= 100
 
-                check_valid_keys(network_acl_keys, vpc.get("default_network_acl"))
-                check_valid_keys(network_acl_keys, vpc.get("default_security_group"))
-
-                for rt_key, rt_val in vpc.get("default_routing_table").items():
-                    assert rt_key in routing_table_keys
-                    assert rt_val
-
-                    if rt_key == "href":
-                        assert re.match(URL_REGEX, rt_val)
-
-                    if rt_key == "id":
-                        assert re.match(ID_REGEX, rt_val)
-
-                    if rt_key == "name":
-                        assert 1 <= len(rt_val) <= 63
-                        assert re.match(NAME_REGEX, rt_val)
-
-                    if rt_key == "resource_type":
-                        assert rt_val in ["routing_table"]
-
-                    if rt_key == "deleted":
-                        assert re.match(URL_REGEX, rt_val.get("more_info"))
-
+        elif k == 'next':
+            assert re.match(URL_REGEX, v.get('href', ''))
 
         else:
             assert v
-
-        if k == "limit":
-            assert 1 <= v <= 100
 
 
 # GET /vpcs/id
@@ -104,10 +77,14 @@ def test_vpc_by_id():
 
     check_required_params(res)
 
+    # testing response
+    data = res.json()
+    check_valid_vpc(data)
+
 
 # POST /vpcs
 def test_post_vpcs():
-    body = {"name": "r006-192412ca-4ab4-4e00-a852-188047f8698d"}
+    body = {"name": "my-vpc-2"}
 
     res = session.post(
         f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2", json=body
@@ -122,6 +99,7 @@ def test_post_vpcs():
     ]
 
     request_body = dict(parse_qsl(res.request.body))
+
     for k, v in request_body.items():
         assert k in optional_body_data
 

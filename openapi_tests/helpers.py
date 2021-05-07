@@ -14,6 +14,39 @@ URL_REGEX = r'^http(s)?:\/\/([^\/?#]*)([^?#]*)(\?([^#]*))?(#(.*))?$'
 ID_REGEX = r'^[-0-9a-z_]+$'
 NAME_REGEX = r'^-?([a-z]|[a-z][-a-z0-9]*[a-z0-9]|[0-9][-a-z0-9]*([a-z]|[-a-z][-a-z0-9]*[a-z0-9]))$'
 
+NETWORK_ACL_KEYS = [
+    "crn",
+    "href",
+    "id",
+    "name",
+    "deleted"
+]
+
+ROUTING_TABLE_KEYS = [
+    "href",
+    "id",
+    "name",
+    "resource_type",
+    "deleted"
+]
+
+VALID_VPC_KEYS = [
+    "classic_access",
+    "created_at",
+    "crn",
+    "default_network_acl",
+    "default_routing_table",
+    "default_security_group",
+    "href",
+    "id",
+    "name",
+    "resource_group",
+    "status",
+    "cse_source_ips",
+
+    # doesn't exist in api spec
+    'resource_type'
+]
 
 def check_valid_keys(keys, param):
     for key, val in param.items():
@@ -31,6 +64,32 @@ def check_valid_keys(keys, param):
             assert re.match(NAME_REGEX, val)
         if key == 'deleted':
             assert re.match(URL_REGEX, val.get('more_info'))
+
+def check_valid_vpc(vpc):
+    for key in vpc.keys():
+        assert key in VALID_VPC_KEYS
+
+    assert isinstance(vpc.get("classic_access"), bool)
+    assert is_date(vpc.get("created_at"))
+    assert vpc.get("crn").startswith("crn:")
+
+    check_valid_keys(NETWORK_ACL_KEYS, vpc.get("default_network_acl"))
+    check_valid_keys(NETWORK_ACL_KEYS, vpc.get("default_security_group"))
+
+    for rt_key, rt_val in vpc.get("default_routing_table").items():
+        assert rt_key in ROUTING_TABLE_KEYS
+        assert rt_val
+        if rt_key == "href":
+            assert re.match(URL_REGEX, rt_val)
+        if rt_key == "id":
+            assert re.match(ID_REGEX, rt_val)
+        if rt_key == "name":
+            assert 1 <= len(rt_val) <= 63
+            assert re.match(NAME_REGEX, rt_val)
+        if rt_key == "resource_type":
+            assert rt_val in ["routing_table"]
+        if rt_key == "deleted":
+            assert re.match(URL_REGEX, rt_val.get("more_info"))
 
 def is_date(string, fuzzy=False):
     """
