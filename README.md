@@ -102,14 +102,15 @@ Examples:
   - `subnets[{'id': 'id_val'}]` on `GET /subnets/`,
 
 
-    **GET /v1/vpcs**
-    * `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.
+### GET /v1/vpcs
 
-    **GET /v1/vpcs/{id}**
-    * `resource_type` is missing from the api spec response parameters
+* `resource_type` is missing from the api spec under `vpcs[]` on the left of the documentation page but is shown in the results.
 
-    **POST /v1/vpcs/**
-    * `resource_group` needs to be passed as dict rather than by id. See example below
+### GET /v1/vpcs/{id}
+* `resource_type` is missing from the api spec response parameters
+
+### POST /v1/vpcs
+* `resource_group` needs to be passed as dict rather than by id. See example below
 
 ```python
 # correct
@@ -128,5 +129,10 @@ r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
 ```
 
 
-**GET /v1/subnets**
+### GET /v1/subnets
 * `resource_type` is missing from the api spec response parameters.
+
+
+### POST /v1/subnets
+
+- `ipv4_cidr_block` is provided in request body but the api specification does not have any information regarding it.

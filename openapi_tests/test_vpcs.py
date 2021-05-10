@@ -1,5 +1,8 @@
+from openapi_tests import helpers
 from openapi_tests.helpers import (
     API_ENDPOINT,
+    RESOURCE_GROUP_ID_REGEX,
+    SUBNET_NAME_REGEX,
     check_required_params,
     REQUIRED_PARAMS,
     session,
@@ -70,7 +73,7 @@ def test_get_vpcs():
 
 # GET /vpcs/id
 def test_vpc_by_id():
-    vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
+    vpc_id = helpers.vpc_id
     res = session.get(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2"
     )
@@ -108,10 +111,10 @@ def test_post_vpcs():
 
         elif k == "name":
             assert 1 <= len(v) <= 63
-            assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", v)
+            assert re.match(SUBNET_NAME_REGEX, v)
 
         elif k == "resource_group":
-            assert re.match(r"^[0-9a-f]{32}$", v.get('id'))
+            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get('id'))
 
     check_required_params(res)
     check_valid_vpc(res.json())
@@ -119,8 +122,8 @@ def test_post_vpcs():
 
 # PATCH /vpcs/{id}
 def test_patch_vpc_by_id():
-    vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
-    body = {"name": "test2_updated"}
+    vpc_id = helpers.vpc_id
+    body = {"name": "test2-updated"}
 
     res = session.patch(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2", json=body
@@ -132,14 +135,16 @@ def test_patch_vpc_by_id():
     name = data.get("name", "")
 
     assert "name" in body.keys()
-    assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", name)
+    assert re.match(SUBNET_NAME_REGEX, name)
     assert 1 <= len(name) <= 63
     check_valid_vpc(data)
+
+    assert data.get('name') == body.get('name')
 
 
 # DELETE /vpcs/{id}
 def test_delete_vpc_by_id():
-    vpc_id = "r006-192412ca-4ab4-4e00-a852-188047f8698d"
+    vpc_id = helpers.vpc_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2"

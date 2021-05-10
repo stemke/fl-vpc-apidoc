@@ -1,10 +1,18 @@
 import json
+from openapi_tests import helpers
 from openapi_tests.helpers import (
     API_ENDPOINT,
+    ID_KEYS,
+    ID_REGEX,
+    RESOURCE_GROUP_ID_REGEX,
+    RESPONSE_KEYS,
+    SUBNET_NAME_REGEX,
     URL_REGEX,
     check_required_params,
     REQUIRED_PARAMS,
+    check_valid_keys,
     check_valid_subnet,
+    check_valid_vpc,
     session,
 )
 from urllib.parse import parse_qsl, urlparse
@@ -66,8 +74,6 @@ def test_get_subnets():
         check_valid_subnet(subnet)
 
 
-
-
 # POST /subnets
 def test_post_subnets():
     body = {
@@ -75,7 +81,8 @@ def test_post_subnets():
         "ipv4_cidr_block": "10.0.1.0/24",
         "ip_version": "ipv4",
         "zone": {"name": "us-south-1"},
-        "vpc": {"id": "a0819609-0997-4f92-9409-86c95ddf59d3"},
+        "vpc": {"id": helpers.vpc_id},
+        "network_acl": {"id": "r006-848ce071-a794-4948-833b-82fba500dc61"}
     }
 
     res = session.post(
@@ -84,52 +91,69 @@ def test_post_subnets():
 
     check_required_params(res)
 
-    optional_body_data = [
+    allowed_body_params = [
+        "vpc",
         "ip_version",
         "name",
         "network_acl",
-        "public_gateway",
         "resource_group",
         "routing_table",
+
         # to double check
         "ipv4_cidr_block",
+        "total_ipv4_address_count",
         "zone",
-        "vpc",
     ]
 
     required_body_data = ["vpc"]
-    request_body = json.loads(res.request.body)
+    req_body = json.loads(res.request.body)
 
     for param in required_body_data:
-        assert param in request_body.keys()
+        assert param in req_body.keys()
 
-    for vpc_param in request_body["vpc"]:
-        assert "id" in vpc_param
+    vpc_body = req_body.get('vpc')
+    check_valid_keys(RESPONSE_KEYS, vpc_body)
 
-    for k, v in request_body.items():
-        assert k in optional_body_data
+    for k, v in vpc_body.items():
+        assert k in ID_KEYS
 
-        if k == "address_prefix_management":
-            assert v in ["auto", "manual"]
+    for k, v in req_body.items():
+        assert k in allowed_body_params + ["public_gateway"]
 
-        if k == "classic_access":
-            assert v in ["true", "false"]
+        if k == "ip_version":
+            assert v in ["ipv4"]
 
         if k == "name":
             assert 1 <= len(v) <= 63
-            assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", v)
+            assert re.match(SUBNET_NAME_REGEX, v)
+
+        if k == "network_acl":
+            assert len(v.keys()) == 1
+            check_valid_keys(ID_KEYS, v)
+
+        if k == "public_gateway":
+            assert len(v.keys()) == 1
+            check_valid_keys(ID_KEYS, v)
 
         if k == "resource_group":
-            assert re.match(r"^[0-9a-f]{32}$", v)
+            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get('id'))
 
-    check_required_params(res)
+        if k == "routing_table":
+            assert len(v.keys()) == 1
+            check_valid_keys(['id', 'href'], v)
+
+    # testing for response
+    for k in ID_KEYS + allowed_body_params:
+        assert k in res.json().keys()
+
+    check_valid_subnet(res.json())
 
 
 # PATCH /subnets/{id}
 def test_patch_subnet_by_id():
 
-    subnet_id = "0717-e7127621-d990-42a8-bb4b-7365402aab33"
-    body = {"name": "test"}
+    subnet_id = helpers.subnet_id
+    body = {"name": "my-subnet-1-modified"}
 
     res = session.patch(
         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2",
@@ -142,17 +166,20 @@ def test_patch_subnet_by_id():
     request_body = dict(parse_qsl(res.request.body))
     name = request_body.get("name", "")
     assert "name" in request_body.keys()
-    assert re.match(r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$", name)
+    assert re.match(SUBNET_NAME_REGEX, name)
     assert 1 <= len(name) <= 63
+
+    assert body['name'] == res.json().get('name')
+    check_valid_subnet(res.json())
 
 
 # DELETE /subnets/{id}
 def test_delete_subnet_by_id():
-    subnet_id = "0717-e7127621-d990-42a8-bb4b-7365402aab33"
+    subnet_id = helpers.subnet_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2"
     )
 
     assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
-    check_required_params(res)
+    assert res.status_code == 204

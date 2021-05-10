@@ -14,12 +14,20 @@ URL_REGEX = r'^http(s)?:\/\/([^\/?#]*)([^?#]*)(\?([^#]*))?(#(.*))?$'
 ID_REGEX = r'^[-0-9a-z_]+$'
 NAME_REGEX = r'^-?([a-z]|[a-z][-a-z0-9]*[a-z0-9]|[0-9][-a-z0-9]*([a-z]|[-a-z][-a-z0-9]*[a-z0-9]))$'
 IPV4_REGEX = r'^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$'
+SUBNET_NAME_REGEX = r'^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$'
+RESOURCE_GROUP_ID_REGEX = r'^[0-9a-f]{32}$'
 
 
 RESPONSE_KEYS = [
     'href',
     'id',
     'name'
+]
+
+ID_KEYS = [
+    'id',
+    'href',
+    'crn'
 ]
 
 NETWORK_ACL_KEYS = RESPONSE_KEYS + [
@@ -73,6 +81,7 @@ def check_valid_keys(keys, param):
             assert re.match(URL_REGEX, val)
 
         elif key == 'id':
+            assert 1 <= len(val) <= 63
             assert re.match(ID_REGEX, val)
 
         elif key == 'name':
@@ -82,6 +91,12 @@ def check_valid_keys(keys, param):
         elif key == 'deleted':
             assert re.match(URL_REGEX, val.get('more_info'))
 
+        elif key == "ip_version":
+            assert val in ["ipv4"]
+
+        elif key == "created_at":
+            assert is_date(val)
+
 def check_valid_resource_group(resource_group):
     for k, v in resource_group.items():
         assert k in RESPONSE_KEYS
@@ -90,7 +105,7 @@ def check_valid_resource_group(resource_group):
             assert re.match(URL_REGEX, v)
 
         elif k == "id":
-            assert re.match(r'^[0-9a-f]{32}$', v)
+            assert re.match(RESOURCE_GROUP_ID_REGEX, v)
 
         elif k == "name":
             assert re.match(r'^[a-zA-Z0-9-_ ]+$', v)
@@ -179,7 +194,11 @@ def check_valid_subnet(subnet):
         assert re.match(URL_REGEX, deleted.get('more_info'))
 
     check_valid_keys(['href', 'name'], subnet.get('zone'))
-    # check_valid_keys(NETWORK_ACL_KEYS, subnet.get('public_gateway'))
+
+    public_gateway = subnet.get('public_gateway')
+    if public_gateway:
+        check_valid_keys(NETWORK_ACL_KEYS, public_gateway)
+        assert public_gateway in ['public_gateway']
 
 
 def is_date(string, fuzzy=False):
