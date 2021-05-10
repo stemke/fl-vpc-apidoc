@@ -7,7 +7,11 @@ import requests
 import requests_mock
 from . import mock_responses
 
-REQUIRED_PARAMS = ["version", "generation"]
+REQUIRED_PARAMS = [
+    "version",
+    "generation"
+]
+
 API_ENDPOINT = "https://us-south.iaas.cloud.ibm.com"
 
 URL_REGEX = r'^http(s)?:\/\/([^\/?#]*)([^?#]*)(\?([^#]*))?(#(.*))?$'
@@ -199,6 +203,41 @@ def check_valid_subnet(subnet):
     if public_gateway:
         check_valid_keys(NETWORK_ACL_KEYS, public_gateway)
         assert public_gateway in ['public_gateway']
+
+
+def check_key(key):
+    optional_params = ["resource_group.id"]
+    required_response_keys = [
+            "id",
+            "crn",
+            "href",
+            "fingerprint",
+            "name",
+            "public_key",
+            "type",
+            "length",
+            "created_at",
+            "resource_group",
+        ]
+    check_valid_keys(required_response_keys, key)
+
+    for k, v in key.items():
+        assert k in required_response_keys + optional_params
+
+        if k == 'fingerprint':
+            assert v.startswith('SHA256')
+
+        elif k == 'length':
+            assert v in [2048, 4096]
+
+        elif k == 'public_key':
+            assert v
+
+        elif k == 'resource_group':
+            check_valid_resource_group(v)
+
+        elif k == 'type':
+            assert v in ['rsa']
 
 
 def is_date(string, fuzzy=False):

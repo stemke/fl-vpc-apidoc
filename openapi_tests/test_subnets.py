@@ -1,22 +1,21 @@
 import json
+import re
+from urllib.parse import parse_qsl, urlparse
+
 from openapi_tests import helpers
 from openapi_tests.helpers import (
     API_ENDPOINT,
     ID_KEYS,
-    ID_REGEX,
+    REQUIRED_PARAMS,
     RESOURCE_GROUP_ID_REGEX,
     RESPONSE_KEYS,
     SUBNET_NAME_REGEX,
     URL_REGEX,
     check_required_params,
-    REQUIRED_PARAMS,
     check_valid_keys,
     check_valid_subnet,
-    check_valid_vpc,
     session,
 )
-from urllib.parse import parse_qsl, urlparse
-import re
 
 
 # TESTS STARTS HERE
@@ -48,14 +47,9 @@ def test_get_subnets():
             assert 1 <= v <= 100
 
     data = res.json()
-    required_response_keys = [
-        'first',
-        'limit',
-        'subnets',
-        'total_count'
-    ]
+    required_response_keys = ["first", "limit", "subnets", "total_count"]
 
-    optional_response_key = ['next']
+    optional_response_key = ["next"]
 
     for k, v in data.items():
         assert k in (required_response_keys + optional_response_key)
@@ -63,11 +57,11 @@ def test_get_subnets():
         if k == "limit":
             assert 1 <= v <= 100
 
-        if k == 'total_count':
+        if k == "total_count":
             assert v >= 0
 
-        if k == 'next':
-            assert re.match(URL_REGEX, v.get('href'))
+        if k == "next":
+            assert re.match(URL_REGEX, v.get("href"))
 
     subnets = data.get("subnets", [])
     for subnet in subnets:
@@ -82,7 +76,7 @@ def test_post_subnets():
         "ip_version": "ipv4",
         "zone": {"name": "us-south-1"},
         "vpc": {"id": helpers.vpc_id},
-        "network_acl": {"id": "r006-848ce071-a794-4948-833b-82fba500dc61"}
+        "network_acl": {"id": "r006-848ce071-a794-4948-833b-82fba500dc61"},
     }
 
     res = session.post(
@@ -98,7 +92,6 @@ def test_post_subnets():
         "network_acl",
         "resource_group",
         "routing_table",
-
         # to double check
         "ipv4_cidr_block",
         "total_ipv4_address_count",
@@ -111,7 +104,7 @@ def test_post_subnets():
     for param in required_body_data:
         assert param in req_body.keys()
 
-    vpc_body = req_body.get('vpc')
+    vpc_body = req_body.get("vpc")
     check_valid_keys(RESPONSE_KEYS, vpc_body)
 
     for k, v in vpc_body.items():
@@ -136,11 +129,11 @@ def test_post_subnets():
             check_valid_keys(ID_KEYS, v)
 
         if k == "resource_group":
-            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get('id'))
+            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get("id"))
 
         if k == "routing_table":
             assert len(v.keys()) == 1
-            check_valid_keys(['id', 'href'], v)
+            check_valid_keys(["id", "href"], v)
 
     # testing for response
     for k in ID_KEYS + allowed_body_params:
@@ -169,7 +162,7 @@ def test_patch_subnet_by_id():
     assert re.match(SUBNET_NAME_REGEX, name)
     assert 1 <= len(name) <= 63
 
-    assert body['name'] == res.json().get('name')
+    assert body["name"] == res.json().get("name")
     check_valid_subnet(res.json())
 
 
@@ -183,3 +176,14 @@ def test_delete_subnet_by_id():
 
     assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
     assert res.status_code == 204
+
+
+def test_get_subnet_by_id():
+    subnet_id = helpers.subnet_id
+
+    res = session.get(
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2"
+    )
+
+    check_required_params(res)
+    check_valid_subnet(res.json())

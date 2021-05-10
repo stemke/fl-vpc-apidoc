@@ -1,22 +1,17 @@
+import re
+from urllib.parse import parse_qsl, urlparse
+
 from openapi_tests import helpers
 from openapi_tests.helpers import (
     API_ENDPOINT,
+    REQUIRED_PARAMS,
     RESOURCE_GROUP_ID_REGEX,
     SUBNET_NAME_REGEX,
-    check_required_params,
-    REQUIRED_PARAMS,
-    session,
-    is_date,
-    check_valid_keys,
-    check_valid_vpc,
     URL_REGEX,
-    ID_REGEX,
-    NAME_REGEX,
+    check_required_params,
+    check_valid_vpc,
+    session,
 )
-
-from urllib.parse import parse_qsl, urlparse
-import re
-import json
 
 
 # TESTS STARTS HERE
@@ -45,7 +40,7 @@ def test_get_vpcs():
 
     # -- testing response
     required_response_keys = ["limit", "first", "total_count", "vpcs"]
-    response_keys = required_response_keys  + ["next"]
+    response_keys = required_response_keys + ["next"]
     data = res.json()
 
     for k in required_response_keys:
@@ -64,8 +59,8 @@ def test_get_vpcs():
         elif k == "limit":
             assert 1 <= v <= 100
 
-        elif k == 'next':
-            assert re.match(URL_REGEX, v.get('href', ''))
+        elif k == "next":
+            assert re.match(URL_REGEX, v.get("href", ""))
 
         else:
             assert v
@@ -114,7 +109,7 @@ def test_post_vpcs():
             assert re.match(SUBNET_NAME_REGEX, v)
 
         elif k == "resource_group":
-            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get('id'))
+            assert re.match(RESOURCE_GROUP_ID_REGEX, v.get("id"))
 
     check_required_params(res)
     check_valid_vpc(res.json())
@@ -139,7 +134,7 @@ def test_patch_vpc_by_id():
     assert 1 <= len(name) <= 63
     check_valid_vpc(data)
 
-    assert data.get('name') == body.get('name')
+    assert data.get("name") == body.get("name")
 
 
 # DELETE /vpcs/{id}
