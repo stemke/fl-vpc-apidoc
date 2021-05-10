@@ -17,7 +17,7 @@ from openapi_tests.helpers import (
 # TESTS STARTS HERE
 # GET /vpcs
 def test_get_vpcs():
-    res = session.get(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2")
+    res = session.get(f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2")
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
     optional_params = ["start", "limit", "resource_group.id", "classic_access"]
@@ -70,7 +70,7 @@ def test_get_vpcs():
 def test_vpc_by_id():
     vpc_id = helpers.vpc_id
     res = session.get(
-        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-05-06&generation=2"
     )
 
     check_required_params(res)
@@ -84,7 +84,7 @@ def test_post_vpcs():
     body = {"name": "my-vpc-2"}
 
     res = session.post(
-        f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2", json=body
+        f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2", json=body
     )
 
     optional_body_data = [
@@ -121,7 +121,7 @@ def test_patch_vpc_by_id():
     body = {"name": "test2-updated"}
 
     res = session.patch(
-        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2", json=body
+        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-05-06&generation=2", json=body
     )
 
     assert re.search(r"v1/vpcs/(.*?)\?[vg]", res.url)
@@ -142,7 +142,7 @@ def test_delete_vpc_by_id():
     vpc_id = helpers.vpc_id
 
     res = session.delete(
-        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-05-06&generation=2"
     )
 
     check_required_params(res)

@@ -12,7 +12,7 @@ from openapi_tests.helpers import (
     SUBNET_NAME_REGEX,
     URL_REGEX,
     check_required_params,
-    check_valid_keys,
+    check_valid_params,
     check_valid_subnet,
     session,
 )
@@ -21,7 +21,7 @@ from openapi_tests.helpers import (
 # TESTS STARTS HERE
 # GET /subnets
 def test_get_subnets():
-    res = session.get(f"{API_ENDPOINT}/v1/subnets?version=2021-04-20&generation=2")
+    res = session.get(f"{API_ENDPOINT}/v1/subnets?version=2021-05-06&generation=2")
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
     optional_params = [
@@ -80,7 +80,7 @@ def test_post_subnets():
     }
 
     res = session.post(
-        f"{API_ENDPOINT}/v1/subnets?version=2021-04-20&generation=2", json=body
+        f"{API_ENDPOINT}/v1/subnets?version=2021-05-06&generation=2", json=body
     )
 
     check_required_params(res)
@@ -105,7 +105,7 @@ def test_post_subnets():
         assert param in req_body.keys()
 
     vpc_body = req_body.get("vpc")
-    check_valid_keys(RESPONSE_KEYS, vpc_body)
+    check_valid_params(RESPONSE_KEYS, vpc_body)
 
     for k, v in vpc_body.items():
         assert k in ID_KEYS
@@ -122,18 +122,18 @@ def test_post_subnets():
 
         if k == "network_acl":
             assert len(v.keys()) == 1
-            check_valid_keys(ID_KEYS, v)
+            check_valid_params(ID_KEYS, v)
 
         if k == "public_gateway":
             assert len(v.keys()) == 1
-            check_valid_keys(ID_KEYS, v)
+            check_valid_params(ID_KEYS, v)
 
         if k == "resource_group":
             assert re.match(RESOURCE_GROUP_ID_REGEX, v.get("id"))
 
         if k == "routing_table":
             assert len(v.keys()) == 1
-            check_valid_keys(["id", "href"], v)
+            check_valid_params(["id", "href"], v)
 
     # testing for response
     for k in ID_KEYS + allowed_body_params:
@@ -149,7 +149,7 @@ def test_patch_subnet_by_id():
     body = {"name": "my-subnet-1-modified"}
 
     res = session.patch(
-        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2",
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-05-06&generation=2",
         data=body,
     )
 
@@ -171,7 +171,7 @@ def test_delete_subnet_by_id():
     subnet_id = helpers.subnet_id
 
     res = session.delete(
-        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-05-06&generation=2"
     )
 
     assert re.search(r"v1/subnets/(.*?)\?[vg]", res.url)
@@ -182,7 +182,7 @@ def test_get_subnet_by_id():
     subnet_id = helpers.subnet_id
 
     res = session.get(
-        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-05-06&generation=2"
     )
 
     check_required_params(res)

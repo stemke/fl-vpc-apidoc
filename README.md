@@ -114,14 +114,14 @@ Examples:
 
 ```python
 # correct
-r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
+r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2",
         headers=HEADERS,
         json={
             'resource_group': {'id':'ea28d6d5de624c9e974fda9ecd3f4262'}
     }).json()
 
 # wrong
-r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
+r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2",
       headers=HEADERS,
       json={
           'resource_group.id': 'ea28d6d5de624c9e974fda9ecd3f4262'
@@ -139,3 +139,8 @@ r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-04-20&generation=2",
 ### GET /v1/keys
 
 * actual response don't have `first`, `limit` or `total_count` keys but it is shown in the api response.
+
+### POST /v1/instances
+
+* no required payload specified on the api spec but they are actually required when making the requests. Although the example given shows some payoad parameters being passed in the request body.
+* To complete the creation of a sample instance, I needed to create a volume but i kept getting `token_missing` error. Although it worked for other api endpoints. What I did was went through the python IBM VPC SDK and I looked at the test for the instances and used the response from there instead.

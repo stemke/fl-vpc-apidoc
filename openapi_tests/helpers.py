@@ -73,7 +73,7 @@ SUBNET_KEYS = NET_KEYS + [
 ]
 
 
-def check_valid_keys(keys, param):
+def check_valid_params(keys, param):
     for key, val in param.items():
         assert key in keys
         assert val
@@ -143,8 +143,8 @@ def check_valid_vpc(vpc):
     assert is_date(vpc.get("created_at"))
     assert vpc.get("crn").startswith("crn:")
 
-    check_valid_keys(NETWORK_ACL_KEYS, vpc.get("default_network_acl"))
-    check_valid_keys(NETWORK_ACL_KEYS, vpc.get("default_security_group"))
+    check_valid_params(NETWORK_ACL_KEYS, vpc.get("default_network_acl"))
+    check_valid_params(NETWORK_ACL_KEYS, vpc.get("default_security_group"))
 
     for rt_key, rt_val in vpc.get("default_routing_table").items():
         assert rt_key in ROUTING_TABLE_KEYS
@@ -185,27 +185,27 @@ def check_valid_subnet(subnet):
     assert 1 <= len(subnet.get('name')) <= 63
     assert re.match(NAME_REGEX, subnet.get('name'))
 
-    check_valid_keys(NETWORK_ACL_KEYS, subnet.get("network_acl"))
+    check_valid_params(NETWORK_ACL_KEYS, subnet.get("network_acl"))
     check_valid_resource_group(subnet.get('resource_group'))
     check_valid_routing_table(subnet.get("routing_table"))
 
     assert subnet.get('status') in ['available', 'deleting', 'failed', 'pending']
     assert subnet.get('total_ipv4_address_count') > 0
-    check_valid_keys(RESPONSE_KEYS + ['crn', 'resource_type'], subnet.get('vpc'))
+    check_valid_params(RESPONSE_KEYS + ['crn', 'resource_type'], subnet.get('vpc'))
 
     deleted = subnet.get('deleted')
     if deleted:
         assert re.match(URL_REGEX, deleted.get('more_info'))
 
-    check_valid_keys(['href', 'name'], subnet.get('zone'))
+    check_valid_params(['href', 'name'], subnet.get('zone'))
 
     public_gateway = subnet.get('public_gateway')
     if public_gateway:
-        check_valid_keys(NETWORK_ACL_KEYS, public_gateway)
+        check_valid_params(NETWORK_ACL_KEYS, public_gateway)
         assert public_gateway in ['public_gateway']
 
 
-def check_key(key):
+def check_valid_key(key):
     optional_params = ["resource_group.id"]
     required_response_keys = [
             "id",
@@ -219,7 +219,7 @@ def check_key(key):
             "created_at",
             "resource_group",
         ]
-    check_valid_keys(required_response_keys, key)
+    check_valid_params(required_response_keys, key)
 
     for k, v in key.items():
         assert k in required_response_keys + optional_params
@@ -238,6 +238,13 @@ def check_key(key):
 
         elif k == 'type':
             assert v in ['rsa']
+
+
+def check_valid_instance(ins):
+    assert isinstance(ins.get('bandwidth'), int)
+    # check_valid_params(NETWORK_ACL_KEYS + RESPONSE_KEYS, ins.get('boot_volume_attachment'))
+
+    # print(ins.get('boot_volume_attachment'))
 
 
 def is_date(string, fuzzy=False):
@@ -391,26 +398,26 @@ adapter.register_uri(
 
 # INSTANCES
 adapter.register_uri(
-    "GET", f"{API_ENDPOINT}/v1/floating_ips", json=mock_responses.GET_INSTANCES_RESPONSE
+    "GET", f"{API_ENDPOINT}/v1/instances", json=mock_responses.GET_INSTANCES_RESPONSE
 )
 adapter.register_uri(
     "POST",
-    f"{API_ENDPOINT}/v1/floating_ips",
+    f"{API_ENDPOINT}/v1/instances",
     json=mock_responses.POST_INSTANCES_RESPONSE,
 )
 adapter.register_uri(
     "DELETE",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
+    f"{API_ENDPOINT}/v1/instances/{floating_ips_id}",
     status_code=mock_responses.DELETE_RESPONSE,
 )
 adapter.register_uri(
     "GET",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
+    f"{API_ENDPOINT}/v1/instances/{floating_ips_id}",
     json=mock_responses.GET_INSTANCE_BY_ID_RESPONSE,
 )
 adapter.register_uri(
     "PATCH",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
+    f"{API_ENDPOINT}/v1/instances/{floating_ips_id}",
     json=mock_responses.PATCH_INSTANCE_BY_ID_RESPONSE,
 )
 

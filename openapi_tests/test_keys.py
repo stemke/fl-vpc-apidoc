@@ -1,4 +1,3 @@
-import json
 import re
 from urllib.parse import parse_qsl, urlparse
 
@@ -7,7 +6,7 @@ from openapi_tests.helpers import (
     API_ENDPOINT,
     REQUIRED_PARAMS,
     SUBNET_NAME_REGEX,
-    check_key,
+    check_valid_key,
     check_required_params,
     session,
 )
@@ -16,7 +15,7 @@ from openapi_tests.helpers import (
 # TESTS STARTS HERE
 # GET /keys
 def test_get_keys():
-    res = session.get(f"{API_ENDPOINT}/v1/keys?version=2021-04-20&generation=2")
+    res = session.get(f"{API_ENDPOINT}/v1/keys?version=2021-05-06&generation=2")
     query_params = dict(parse_qsl(urlparse(res.url).query))
 
     optional_params = ["resource_group.id"]
@@ -34,7 +33,7 @@ def test_get_keys():
     # -- testing response
 
     for data in response:
-        check_key(data)
+        check_valid_key(data)
 
 
 # GET /keys/id
@@ -42,13 +41,13 @@ def test_key_by_id():
     key_id = helpers.key_id
 
     res = session.get(
-        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-05-06&generation=2"
     )
 
     check_required_params(res)
 
     # testing response
-    check_key(res.json())
+    check_valid_key(res.json())
 
 
 # POST /keys
@@ -60,7 +59,7 @@ def test_post_keys():
     }
 
     res = session.post(
-        f"{API_ENDPOINT}/v1/keys?version=2021-04-20&generation=2", json=body
+        f"{API_ENDPOINT}/v1/keys?version=2021-05-06&generation=2", json=body
     )
 
     allowed_body_data = ["public_key", "name", "resource_group", "type"]
@@ -69,7 +68,7 @@ def test_post_keys():
         assert k in allowed_body_data
 
     check_required_params(res)
-    check_key(res.json())
+    check_valid_key(res.json())
 
 
 # PATCH /keys/{id}
@@ -78,7 +77,7 @@ def test_patch_key_by_id():
     body = {"name": "my-key-1-modified"}
 
     res = session.patch(
-        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-04-20&generation=2", json=body
+        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-05-06&generation=2", json=body
     )
 
     assert re.search(r"v1/keys/(.*?)\?[vg]", res.url)
@@ -89,7 +88,7 @@ def test_patch_key_by_id():
     assert "name" in body.keys()
     assert re.match(SUBNET_NAME_REGEX, name)
     assert 1 <= len(name) <= 63
-    check_key(data)
+    check_valid_key(data)
 
     assert data.get("name") == body.get("name")
 
@@ -99,7 +98,7 @@ def test_delete_key_by_id():
     key_id = helpers.key_id
 
     res = session.delete(
-        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-04-20&generation=2"
+        f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-05-06&generation=2"
     )
 
     check_required_params(res)
