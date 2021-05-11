@@ -1,16 +1,16 @@
 import re
 from urllib.parse import parse_qsl, urlparse
 
-from openapi_tests import helpers
-from openapi_tests.helpers import (
-    API_ENDPOINT,
+from openapi_tests import _adapter
+from openapi_tests._helpers import (
     REQUIRED_PARAMS,
     SUBNET_NAME_REGEX,
     URL_REGEX,
     check_valid_instance,
     check_required_params,
-    session,
 )
+
+from openapi_tests._adapter import API_ENDPOINT, session
 
 
 # TESTS STARTS HERE
@@ -32,12 +32,11 @@ def test_get_instances():
     data = res.json()
     required_response_keys = ["first", "limit", "instances", "total_count"]
 
-    old_allowed_instance_keys = [
+    instance_keys = [
         "bandwidth",
         "boot_volume_attachment",
         "created_at",
         "crn",
-        "gpu",
         "href",
         "id",
         "image",
@@ -54,30 +53,13 @@ def test_get_instances():
         "zone",
     ]
 
-    allowed_instance_keys = [
-        "bandwidth",
-        "boot_volume_attachment",
-        "created_at",
-        "crn",
+    old_allowed_instance_keys = instance_keys + ["gpu"]
+
+    allowed_instance_keys = instance_keys + [
+        "placement_target",
         "dedicated_host",
         "disks",
-        "href",
-        "id",
-        "image",
-        "memory",
-        "name",
-        "network_interfaces",
-        "placement_target",
-        "primary_network_interface",
-        "profile",
-        "placement_target",
-        "resource_group",
-        "status",
         "status_reasons",
-        "vcpu",
-        "volume_attachments",
-        "vpc",
-        "zone",
     ]
 
     optional_response_key = ["next"]
@@ -112,7 +94,7 @@ def test_get_instances():
 
 # GET /instances/id
 def test_key_by_id():
-    instance_id = helpers.instance_id
+    instance_id = _adapter.instance_id
 
     res = session.get(
         f"{API_ENDPOINT}/v1/instances/{instance_id}?version=2021-05-06&generation=2"
@@ -186,7 +168,7 @@ def test_post_instances():
 
 # PATCH /instances/{id}
 def test_patch_key_by_id():
-    instance_id = helpers.instance_id
+    instance_id = _adapter.instance_id
     body = {"name": "my-instance-updated"}
 
     res = session.patch(
@@ -208,7 +190,7 @@ def test_patch_key_by_id():
 
 # DELETE /instances/{id}
 def test_delete_key_by_id():
-    instance_id = helpers.instance_id
+    instance_id = _adapter.instance_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/instances/{instance_id}?version=2021-05-06&generation=2"

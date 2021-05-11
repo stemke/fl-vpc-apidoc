@@ -1,22 +1,22 @@
-import os
 import re
 from urllib.parse import parse_qsl, urlparse
 from dateutil.parser import parse
 
-import requests
-import requests_mock
-from . import mock_responses
 
 REQUIRED_PARAMS = ["version", "generation"]
 
-API_ENDPOINT = "https://us-south.iaas.cloud.ibm.com"
-
 URL_REGEX = r"^http(s)?:\/\/([^\/?#]*)([^?#]*)(\?([^#]*))?(#(.*))?$"
+
 ID_REGEX = r"^[-0-9a-z_]+$"
+
 NAME_REGEX = r"^-?([a-z]|[a-z][-a-z0-9]*[a-z0-9]|[0-9][-a-z0-9]*([a-z]|[-a-z][-a-z0-9]*[a-z0-9]))$"
+
 IPV4_REGEX = r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(3[0-2]|[1-2][0-9]|[0-9]))$"
+
 SUBNET_NAME_REGEX = r"^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$"
+
 RESOURCE_GROUP_ID_REGEX = r"^[0-9a-f]{32}$"
+
 IP_ADDRESS_REGEX = r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 
 
@@ -37,7 +37,10 @@ NETWORK_ACL_KEYS = RESPONSE_KEYS + [
     "deleted",
 ]
 
-ROUTING_TABLE_KEYS = RESPONSE_KEYS + ["resource_type", "deleted"]
+ROUTING_TABLE_KEYS = RESPONSE_KEYS + [
+    "resource_type",
+    "deleted"
+]
 
 NET_KEYS = RESPONSE_KEYS + [
     "created_at",
@@ -67,6 +70,23 @@ SUBNET_KEYS = NET_KEYS + [
     "zone",
 ]
 
+INSTANCE_CODES = [
+    "cannot_start",
+    "cannot_start_capacity",
+    "cannot_start_compute",
+    "cannot_start_ip_address",
+    "cannot_start_network",
+    "cannot_start_storage",
+    "encryption_key_deleted",
+]
+
+NET_STATUS = [
+    "available",
+    "deleting",
+    "failed",
+    "pending"
+]
+
 INSTANCE_STATUSES = [
     "deleting",
     "failed",
@@ -80,17 +100,6 @@ INSTANCE_STATUSES = [
     "stopped",
     "stopping",
 ]
-
-INSTANCE_CODES = [
-    "cannot_start",
-    "cannot_start_capacity",
-    "cannot_start_compute",
-    "cannot_start_ip_address",
-    "cannot_start_network",
-    "cannot_start_storage",
-    "encryption_key_deleted",
-]
-
 
 def check_valid_params(keys, param):
     for key, val in param.items():
@@ -211,7 +220,7 @@ def check_valid_subnet(subnet):
     check_valid_resource_group(subnet.get("resource_group"))
     check_valid_routing_table(subnet.get("routing_table"))
 
-    assert subnet.get("status") in ["available", "deleting", "failed", "pending"]
+    assert subnet.get("status") in NET_STATUS
     assert subnet.get("total_ipv4_address_count") > 0
     check_valid_params(RESPONSE_KEYS + ["crn", "resource_type"], subnet.get("vpc"))
 
@@ -241,6 +250,7 @@ def check_valid_key(key):
         "created_at",
         "resource_group",
     ]
+
     check_valid_params(required_response_keys, key)
 
     for k, v in key.items():
@@ -349,6 +359,28 @@ def check_valid_instance(ins):
         check_valid_params(NETWORK_ACL_KEYS, image)
 
 
+def check_valid_floating_ip(ip):
+    check_valid_params(NET_KEYS + ['address', 'zone', 'target'], ip)
+
+    for k, v in ip.items():
+        if k == 'address':
+            assert re.match(IP_ADDRESS_REGEX, v)
+
+        elif k == 'resource_group':
+            check_valid_resource_group(v)
+
+        elif k == 'status':
+            assert v in NET_STATUS
+
+        elif k == 'zone':
+            check_valid_params(["href", "name"], v)
+
+        elif k == 'target':
+            check_valid_params(ROUTING_TABLE_KEYS + ['primary_ipv4_address'], v)
+            assert v.get("resource_type") in ['network_interface']
+            assert re.match(IP_ADDRESS_REGEX, v.get('primary_ipv4_address'))
+
+
 def is_date(string, fuzzy=False):
     """
     Return whether the string can be interpreted as a date.
@@ -364,30 +396,6 @@ def is_date(string, fuzzy=False):
         return False
 
 
-def get_iam_token(api_token="api_token_here"):
-    DEFAULT_IAM_URL = "https://iam.cloud.ibm.com"
-    CONTENT_TYPE = "application/x-www-form-urlencoded"
-    OPERATION_PATH = "/identity/token"
-    REQUEST_TOKEN_GRANT_TYPE = "urn:ibm:params:oauth:grant-type:apikey"
-    REQUEST_TOKEN_RESPONSE_TYPE = "cloud_iam"
-    TOKEN_NAME = "access_token"
-
-    apikey = os.getenv("API_KEY", api_token)
-
-    headers = {"Content-type": CONTENT_TYPE, "Accept": "application/json"}
-
-    data = {
-        "grant_type": REQUEST_TOKEN_GRANT_TYPE,
-        "apikey": apikey,
-        "response_type": REQUEST_TOKEN_RESPONSE_TYPE,
-    }
-
-    req = requests.post(
-        f"{DEFAULT_IAM_URL}{OPERATION_PATH}", headers=headers, data=data
-    ).json()
-    return req.get(TOKEN_NAME)
-
-
 # helper methods
 def check_required_params(request, required_params=REQUIRED_PARAMS):
     query_params = dict(parse_qsl(urlparse(request.url).query))
@@ -401,152 +409,3 @@ def check_required_params(request, required_params=REQUIRED_PARAMS):
     assert re.search(regex, query_params.get("version"))
     # check if generation is a number
     assert query_params.get("generation") == "2"
-
-
-iam_token = ""  # get_iam_token()
-
-HEADERS = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    "Accept": "application/json",
-    "Authorization": iam_token,
-    "token_type": "Bearer",
-}
-
-
-vpc_id = mock_responses.GET_VPC_BY_ID_RESPONSE.get("id")
-subnet_id = mock_responses.GET_SUBNET_BY_ID_RESPONSE.get("id")
-key_id = mock_responses.GET_KEY_BY_ID_RESPONSE.get("id")
-instance_id = mock_responses.GET_INSTANCE_BY_ID_RESPONSE.get("id")
-floating_ips_id = mock_responses.GET_FLOATING_IP_BY_ID_RESPONSE.get("id")
-
-
-session = requests.Session()
-adapter = requests_mock.Adapter()
-session.mount(API_ENDPOINT, adapter)
-session.headers = HEADERS
-
-
-# VPCS
-adapter.register_uri(
-    "GET", f"{API_ENDPOINT}/v1/vpcs", json=mock_responses.GET_VPCS_RESPONSE
-)
-adapter.register_uri(
-    "POST", f"{API_ENDPOINT}/v1/vpcs", json=mock_responses.POST_VPCS_RESPONSE
-)
-adapter.register_uri(
-    "DELETE",
-    f"{API_ENDPOINT}/v1/vpcs/{vpc_id}",
-    status_code=mock_responses.DELETE_RESPONSE,
-)
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/vpcs/{vpc_id}",
-    json=mock_responses.GET_VPC_BY_ID_RESPONSE,
-)
-adapter.register_uri(
-    "PATCH",
-    f"{API_ENDPOINT}/v1/vpcs/{vpc_id}",
-    json=mock_responses.PATCH_VPC_BY_ID_RESPONSE,
-)
-
-
-# SUBNETS
-adapter.register_uri(
-    "GET", f"{API_ENDPOINT}/v1/subnets", json=mock_responses.GET_SUBNETS_RESPONSE
-)
-adapter.register_uri(
-    "POST", f"{API_ENDPOINT}/v1/subnets", json=mock_responses.POST_SUBNETS_RESPONSE
-)
-adapter.register_uri(
-    "DELETE",
-    f"{API_ENDPOINT}/v1/subnets/{subnet_id}",
-    status_code=mock_responses.DELETE_RESPONSE,
-)
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/subnets/{subnet_id}",
-    json=mock_responses.GET_SUBNET_BY_ID_RESPONSE,
-)
-adapter.register_uri(
-    "PATCH",
-    f"{API_ENDPOINT}/v1/subnets/{subnet_id}",
-    json=mock_responses.PATCH_SUBNET_BY_ID_RESPONSE,
-)
-
-
-# KEYS
-adapter.register_uri(
-    "GET", f"{API_ENDPOINT}/v1/keys", json=mock_responses.GET_KEYS_RESPONSE
-)
-adapter.register_uri(
-    "POST", f"{API_ENDPOINT}/v1/keys", json=mock_responses.POST_KEYS_RESPONSE
-)
-adapter.register_uri(
-    "DELETE",
-    f"{API_ENDPOINT}/v1/keys/{key_id}",
-    status_code=mock_responses.DELETE_RESPONSE,
-)
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/keys/{key_id}",
-    json=mock_responses.GET_KEY_BY_ID_RESPONSE,
-)
-adapter.register_uri(
-    "PATCH",
-    f"{API_ENDPOINT}/v1/keys/{key_id}",
-    json=mock_responses.PATCH_KEY_BY_ID_RESPONSE,
-)
-
-
-# INSTANCES
-adapter.register_uri(
-    "GET", f"{API_ENDPOINT}/v1/instances", json=mock_responses.GET_INSTANCES_RESPONSE
-)
-adapter.register_uri(
-    "POST",
-    f"{API_ENDPOINT}/v1/instances",
-    json=mock_responses.POST_INSTANCES_RESPONSE,
-)
-adapter.register_uri(
-    "DELETE",
-    f"{API_ENDPOINT}/v1/instances/{instance_id}",
-    status_code=mock_responses.DELETE_RESPONSE,
-)
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/instances/{instance_id}",
-    json=mock_responses.GET_INSTANCE_BY_ID_RESPONSE,
-)
-adapter.register_uri(
-    "PATCH",
-    f"{API_ENDPOINT}/v1/instances/{instance_id}",
-    json=mock_responses.PATCH_INSTANCE_BY_ID_RESPONSE,
-)
-
-
-# FLOATING IPS
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/floating_ips",
-    json=mock_responses.GET_FLOATING_IPS_RESPONSE,
-)
-adapter.register_uri(
-    "POST",
-    f"{API_ENDPOINT}/v1/floating_ips",
-    json=mock_responses.POST_FLOATING_IPS_RESPONSE,
-)
-adapter.register_uri(
-    "DELETE",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
-    status_code=mock_responses.DELETE_RESPONSE,
-)
-adapter.register_uri(
-    "GET",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
-    json=mock_responses.GET_FLOATING_IP_BY_ID_RESPONSE,
-)
-adapter.register_uri(
-    "PATCH",
-    f"{API_ENDPOINT}/v1/floating_ips/{floating_ips_id}",
-    json=mock_responses.PATCH_FLOATING_IP_BY_ID_RESPONSE,
-)

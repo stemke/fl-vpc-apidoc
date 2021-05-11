@@ -2,9 +2,8 @@ import json
 import re
 from urllib.parse import parse_qsl, urlparse
 
-from openapi_tests import helpers
-from openapi_tests.helpers import (
-    API_ENDPOINT,
+from openapi_tests import _adapter
+from openapi_tests._helpers import (
     ID_KEYS,
     REQUIRED_PARAMS,
     RESOURCE_GROUP_ID_REGEX,
@@ -14,8 +13,9 @@ from openapi_tests.helpers import (
     check_required_params,
     check_valid_params,
     check_valid_subnet,
-    session,
 )
+
+from openapi_tests._adapter import API_ENDPOINT, session
 
 
 # TESTS STARTS HERE
@@ -75,7 +75,7 @@ def test_post_subnets():
         "ipv4_cidr_block": "10.0.1.0/24",
         "ip_version": "ipv4",
         "zone": {"name": "us-south-1"},
-        "vpc": {"id": helpers.vpc_id},
+        "vpc": {"id": _adapter.vpc_id},
         "network_acl": {"id": "r006-848ce071-a794-4948-833b-82fba500dc61"},
     }
 
@@ -145,7 +145,7 @@ def test_post_subnets():
 # PATCH /subnets/{id}
 def test_patch_subnet_by_id():
 
-    subnet_id = helpers.subnet_id
+    subnet_id = _adapter.subnet_id
     body = {"name": "my-subnet-1-modified"}
 
     res = session.patch(
@@ -168,7 +168,7 @@ def test_patch_subnet_by_id():
 
 # DELETE /subnets/{id}
 def test_delete_subnet_by_id():
-    subnet_id = helpers.subnet_id
+    subnet_id = _adapter.subnet_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-05-06&generation=2"
@@ -179,7 +179,7 @@ def test_delete_subnet_by_id():
 
 
 def test_get_subnet_by_id():
-    subnet_id = helpers.subnet_id
+    subnet_id = _adapter.subnet_id
 
     res = session.get(
         f"{API_ENDPOINT}/v1/subnets/{subnet_id}?version=2021-05-06&generation=2"

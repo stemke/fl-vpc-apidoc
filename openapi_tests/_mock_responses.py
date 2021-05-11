@@ -49,142 +49,7 @@ PATCH_KEY_BY_ID_RESPONSE = {'id': 'r006-bd961078-f094-43fa-8201-dc193b4768ca', '
 
 GET_INSTANCES_RESPONSE_OLD = {"first": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances?limit=20"}, "instances": [{"bandwidth": 1000, "boot_volume_attachment": {"deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "device": {"id": "80b3e36e-41f4-40e9-bd56-beae81792a68"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/1e09281b-f177-46fb-baf1-bc152b2e391a/volume_attachments/82cbf856-9cbb-45fb-b62f-d7bcef32399a", "id": "82cbf856-9cbb-45fb-b62f-d7bcef32399a", "name": "my-volume-attachment", "volume": {"crn": "crn:v1:bluemix:public:is:us-south-1:a/123456::volume:1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-volume"}}, "created_at": "2019-01-01T12:00:00.000Z", "crn": "crn:v1:bluemix:public:is:us-south-1:a/123456::instance:1e09281b-f177-46fb-baf1-bc152b2e391a", "gpu": {"count": 1, "manufacturer": "nvidia", "memory": 1, "model": "Tesla V100"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/1e09281b-f177-46fb-baf1-bc152b2e391a", "id": "1e09281b-f177-46fb-baf1-bc152b2e391a", "image": {"crn": "crn:v1:bluemix:public:is:us-south:a/123456::image:72b27b5c-f4b0-48bb-b954-5becc7c1dcb8", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/images/72b27b5c-f4b0-48bb-b954-5becc7c1dcb8", "id": "72b27b5c-f4b0-48bb-b954-5becc7c1dcb8", "name": "my-image"}, "memory": 8, "name": "my-instance", "network_interfaces": [{"deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/1e09281b-f177-46fb-baf1-bc152b2e391a/network_interfaces/10c02d81-0ecb-4dc5-897d-28392913b81e", "id": "10c02d81-0ecb-4dc5-897d-28392913b81e", "name": "my-network-interface", "primary_ipv4_address": "192.168.3.4", "resource_type": "network_interface", "subnet": {"crn": "crn:v1:bluemix:public:is:us-south-1:a/123456::subnet:7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "id": "7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "name": "my-subnet"}}], "primary_network_interface": {"deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/1e09281b-f177-46fb-baf1-bc152b2e391a/network_interfaces/10c02d81-0ecb-4dc5-897d-28392913b81e", "id": "10c02d81-0ecb-4dc5-897d-28392913b81e", "name": "my-network-interface", "primary_ipv4_address": "192.168.3.4", "resource_type": "network_interface", "subnet": {"crn": "crn:v1:bluemix:public:is:us-south-1:a/123456::subnet:7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "id": "7ec86020-1c6e-4889-b3f0-a15f2e50f87e", "name": "my-subnet"}}, "profile": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instance/profiles/bc1-4x16", "name": "bc1-4x16"}, "resource_group": {"href": "https://resource-controller.cloud.ibm.com/v2/resource_groups/fee82deba12e4c0fb69c3b09d1f12345", "id": "fee82deba12e4c0fb69c3b09d1f12345", "name": "my-resource-group"}, "status": "deleting", "vcpu": {"architecture": "amd64", "count": 4}, "volume_attachments": [{"deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "device": {"id": "80b3e36e-41f4-40e9-bd56-beae81792a68"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/1e09281b-f177-46fb-baf1-bc152b2e391a/volume_attachments/82cbf856-9cbb-45fb-b62f-d7bcef32399a", "id": "82cbf856-9cbb-45fb-b62f-d7bcef32399a", "name": "my-volume-attachment", "volume": {"crn": "crn:v1:bluemix:public:is:us-south-1:a/123456::volume:1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "id": "1a6b7274-678d-4dfb-8981-c71dd9d4daa5", "name": "my-volume"}}], "vpc": {"crn": "crn:v1:bluemix:public:is:us-south:a/123456::vpc:4727d842-f94f-4a2d-824a-9bc9b02c523b", "deleted": {"more_info": "https://cloud.ibm.com/apidocs/vpc#deleted-resources"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/4727d842-f94f-4a2d-824a-9bc9b02c523b", "id": "4727d842-f94f-4a2d-824a-9bc9b02c523b", "name": "my-vpc"}, "zone": {"href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1", "name": "us-south-1"}}], "limit": 20, "next": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances?start=9d5a91a3e2cbd233b5a5b33436855ed1&limit=20"}, "total_count": 132}
 
-GET_INSTANCES_RESPONSE = {
-  "first": {
-    "href": "https://us-south.iaas.cloud.ibm.com/v1/instances?limit=50"
-  },
-  "instances": [
-    {
-      "bandwidth": 4000,
-      "boot_volume_attachment": {
-        "device": {
-          "id": "a8a15363-a6f7-4f01-af60-715e85b28141"
-        },
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/eb1b7391-2ca2-4ab5-84a8-b92157a633b0/volume_attachments/7389-a8a15363-a6f7-4f01-af60-715e85b28141",
-        "id": "a8a15363-a6f7-4f01-af60-715e85b28141",
-        "name": "my-boot-volume-attachment",
-        "volume": {
-          "crn": "crn:[...]",
-          "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/49c5d61b-41e7-4c01-9b7a-1a97366c6916",
-          "id": "49c5d61b-41e7-4c01-9b7a-1a97366c6916",
-          "name": "my-boot-volume"
-        }
-      },
-      "created_at": "2020-03-26T16:11:57Z",
-      "crn": "crn:[...]",
-      "dedicated_host": {
-        "crn": "crn:[...]",
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/dedicated_hosts/0787-8c2a09be-ee18-4af2-8ef4-6a6060732221",
-        "id": "0787-8c2a09be-ee18-4af2-8ef4-6a6060732221",
-        "name": "test-new",
-        "resource_type": "dedicated_host"
-      },
-      "disks": [],
-      "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/eb1b7391-2ca2-4ab5-84a8-b92157a633b0",
-      "id": "eb1b7391-2ca2-4ab5-84a8-b92157a633b0",
-      "image": {
-        "crn": "crn:[...]",
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/images/9aaf3bcb-dcd7-4de7-bb60-24e39ff9d366",
-        "id": "9aaf3bcb-dcd7-4de7-bb60-24e39ff9d366",
-        "name": "my-image"
-      },
-      "memory": 8,
-      "name": "my-instance",
-      "network_interfaces": [
-        {
-          "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/network_interfaces/7ca88dfb-8962-469d-b1de-1dd56f4c3275",
-          "id": "7ca88dfb-8962-469d-b1de-1dd56f4c3275",
-          "name": "my-network-interface",
-          "primary_ipv4_address": "10.0.0.32",
-          "resource_type": "network_interface",
-          "subnet": {
-            "crn": "crn:[...]",
-            "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/7389-bea6a632-5e13-42a4-b4b8-31dc877abfe4",
-            "id": "bea6a632-5e13-42a4-b4b8-31dc877abfe4",
-            "name": "my-subnet"
-          }
-        }
-      ],
-      "placement_target": {
-        "crn": "crn:[...]",
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/dedicated_hosts/0787-8c2a09be-ee18-4af2-8ef4-6a6060732221",
-        "id": "0787-8c2a09be-ee18-4af2-8ef4-6a6060732221",
-        "name": "test-new",
-        "resource_type": "dedicated_host"
-      },
-      "primary_network_interface": {
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/network_interfaces/7ca88dfb-8962-469d-b1de-1dd56f4c3275",
-        "id": "7ca88dfb-8962-469d-b1de-1dd56f4c3275",
-        "name": "my-network-interface",
-        "primary_ipv4_address": "10.0.0.32",
-        "resource_type": "network_interface",
-        "subnet": {
-          "crn": "crn:[...]",
-          "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/bea6a632-5e13-42a4-b4b8-31dc877abfe4",
-          "id": "bea6a632-5e13-42a4-b4b8-31dc877abfe4",
-          "name": "my-subnet"
-        }
-      },
-      "profile": {
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/instance/profiles/bx2-2x8",
-        "name": "bx2-2x8"
-      },
-      "resource_group": {
-        "href": "https://resource-controller.cloud.ibm.com/v2/resource_groups/4bbce614c13444cd8fc5e7e878ef8e21",
-        "id": "4bbce614c13444cd8fc5e7e878ef8e21",
-        "name": "Default"
-      },
-      "status": "running",
-      "status_reasons": [],
-      "vcpu": {
-        "architecture": "amd64",
-        "count": 2
-      },
-      "volume_attachments": [
-        {
-          "device": {
-            "id": "a8a15363-a6f7-4f01-af60-715e85b28141"
-          },
-          "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/volume_attachments/7389-a8a15363-a6f7-4f01-af60-715e85b28141",
-          "id": "a8a15363-a6f7-4f01-af60-715e85b28141",
-          "name": "my-boot-volume-attachment",
-          "volume": {
-            "crn": "crn:[...]",
-            "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/49c5d61b-41e7-4c01-9b7a-1a97366c6916",
-            "id": "49c5d61b-41e7-4c01-9b7a-1a97366c6916",
-            "name": "my-boot-volume"
-          }
-        },
-        {
-          "device": {
-            "id": "e77125cb-4df0-4988-a878-531ae0ae0b70"
-          },
-          "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/volume_attachments/7389-e77125cb-4df0-4988-a878-531ae0ae0b70",
-          "id": "e77125cb-4df0-4988-a878-531ae0ae0b70",
-          "name": "my-volume-attachment-1",
-          "volume": {
-            "crn": "crn:[...]",
-            "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/2cc091f5-4d46-48f3-99b7-3527ae3f4392",
-            "id": "2cc091f5-4d46-48f3-99b7-3527ae3f4392",
-            "name": "my-data-volume"
-          }
-        }
-      ],
-      "vpc": {
-        "crn": "crn:[...]",
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/f0aae929-7047-46d1-92e1-9102b07a7f6f",
-        "id": "f0aae929-7047-46d1-92e1-9102b07a7f6f",
-        "name": "my-vpc"
-      },
-      "zone": {
-        "href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1",
-        "name": "us-south-1"
-      }
-    }
-  ],
-  "limit": 50,
-  "total_count": 1
-}
+GET_INSTANCES_RESPONSE =  {"first": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances?limit=50"}, "instances": [{"bandwidth": 4000, "boot_volume_attachment": {"device": {"id": "a8a15363-a6f7-4f01-af60-715e85b28141"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/eb1b7391-2ca2-4ab5-84a8-b92157a633b0/volume_attachments/7389-a8a15363-a6f7-4f01-af60-715e85b28141", "id": "a8a15363-a6f7-4f01-af60-715e85b28141", "name": "my-boot-volume-attachment", "volume": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/49c5d61b-41e7-4c01-9b7a-1a97366c6916", "id": "49c5d61b-41e7-4c01-9b7a-1a97366c6916", "name": "my-boot-volume"} }, "created_at": "2020-03-26T16:11:57Z", "crn": "crn:[...]", "dedicated_host": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/dedicated_hosts/0787-8c2a09be-ee18-4af2-8ef4-6a6060732221", "id": "0787-8c2a09be-ee18-4af2-8ef4-6a6060732221", "name": "test-new", "resource_type": "dedicated_host"}, "disks": [], "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/eb1b7391-2ca2-4ab5-84a8-b92157a633b0", "id": "eb1b7391-2ca2-4ab5-84a8-b92157a633b0", "image": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/images/9aaf3bcb-dcd7-4de7-bb60-24e39ff9d366", "id": "9aaf3bcb-dcd7-4de7-bb60-24e39ff9d366", "name": "my-image"}, "memory": 8, "name": "my-instance", "network_interfaces": [{"href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/network_interfaces/7ca88dfb-8962-469d-b1de-1dd56f4c3275", "id": "7ca88dfb-8962-469d-b1de-1dd56f4c3275", "name": "my-network-interface", "primary_ipv4_address": "10.0.0.32", "resource_type": "network_interface", "subnet": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/7389-bea6a632-5e13-42a4-b4b8-31dc877abfe4", "id": "bea6a632-5e13-42a4-b4b8-31dc877abfe4", "name": "my-subnet"} } ], "placement_target": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/dedicated_hosts/0787-8c2a09be-ee18-4af2-8ef4-6a6060732221", "id": "0787-8c2a09be-ee18-4af2-8ef4-6a6060732221", "name": "test-new", "resource_type": "dedicated_host"}, "primary_network_interface": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/network_interfaces/7ca88dfb-8962-469d-b1de-1dd56f4c3275", "id": "7ca88dfb-8962-469d-b1de-1dd56f4c3275", "name": "my-network-interface", "primary_ipv4_address": "10.0.0.32", "resource_type": "network_interface", "subnet": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/subnets/bea6a632-5e13-42a4-b4b8-31dc877abfe4", "id": "bea6a632-5e13-42a4-b4b8-31dc877abfe4", "name": "my-subnet"} }, "profile": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instance/profiles/bx2-2x8", "name": "bx2-2x8"}, "resource_group": {"href": "https://resource-controller.cloud.ibm.com/v2/resource_groups/4bbce614c13444cd8fc5e7e878ef8e21", "id": "4bbce614c13444cd8fc5e7e878ef8e21", "name": "Default"}, "status": "running", "status_reasons": [], "vcpu": {"architecture": "amd64", "count": 2 }, "volume_attachments": [{"device": {"id": "a8a15363-a6f7-4f01-af60-715e85b28141"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/volume_attachments/7389-a8a15363-a6f7-4f01-af60-715e85b28141", "id": "a8a15363-a6f7-4f01-af60-715e85b28141", "name": "my-boot-volume-attachment", "volume": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/49c5d61b-41e7-4c01-9b7a-1a97366c6916", "id": "49c5d61b-41e7-4c01-9b7a-1a97366c6916", "name": "my-boot-volume"} }, {"device": {"id": "e77125cb-4df0-4988-a878-531ae0ae0b70"}, "href": "https://us-south.iaas.cloud.ibm.com/v1/instances/e402fa1b-96f6-4aa2-a8d7-703aac843651/volume_attachments/7389-e77125cb-4df0-4988-a878-531ae0ae0b70", "id": "e77125cb-4df0-4988-a878-531ae0ae0b70", "name": "my-volume-attachment-1", "volume": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/volumes/2cc091f5-4d46-48f3-99b7-3527ae3f4392", "id": "2cc091f5-4d46-48f3-99b7-3527ae3f4392", "name": "my-data-volume"} } ], "vpc": {"crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/vpcs/f0aae929-7047-46d1-92e1-9102b07a7f6f", "id": "f0aae929-7047-46d1-92e1-9102b07a7f6f", "name": "my-vpc"}, "zone": {"href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1", "name": "us-south-1"} } ], "limit": 50, "total_count": 1 }
 
 GET_INSTANCE_BY_ID_RESPONSE = GET_INSTANCES_RESPONSE["instances"][0]
 
@@ -194,10 +59,13 @@ PATCH_INSTANCE_BY_ID_RESPONSE = GET_INSTANCE_BY_ID_RESPONSE
 PATCH_INSTANCE_BY_ID_RESPONSE['name'] = 'my-instance-updated'
 
 # FLOATING IPS
-GET_FLOATING_IP_BY_ID_RESPONSE = {'id': 'r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'crn': 'crn:v1:bluemix:public:is:us-south-1:a/0f0d916bcdeb41fc82e06b1b60b219b9::floating-ip:r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips/r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'address': '169.48.152.25', 'name': 'my-floating-ip-1', 'status': 'available', 'created_at': '2021-05-05T13:41:41Z', 'zone': {'name': 'us-south-1', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1'}, 'resource_group': {'id': 'ea28d6d5de624c9e974fda9ecd3f4263', 'href': 'https://resource-controller.cloud.ibm.com/v2/resource_groups/ea28d6d5de624c9e974fda9ecd3f4263', 'name': 'Default'}}
+GET_FLOATING_IPS_RESPONSE_OLD = {'limit': 50, 'first': {'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips?limit=50'}, 'total_count': 1, 'floating_ips': [{'id': 'r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'crn': 'crn:v1:bluemix:public:is:us-south-1:a/0f0d916bcdeb41fc82e06b1b60b219b9::floating-ip:r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips/r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'address': '169.48.152.25', 'name': 'my-floating-ip-1-updated', 'status': 'available', 'created_at': '2021-05-05T13:41:41Z', 'zone': {'name': 'us-south-1', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1'}, 'resource_group': {'id': 'ea28d6d5de624c9e974fda9ecd3f4263', 'href': 'https://resource-controller.cloud.ibm.com/v2/resource_groups/ea28d6d5de624c9e974fda9ecd3f4263', 'name': 'Default'}}]}
 
-GET_FLOATING_IPS_RESPONSE = {'limit': 50, 'first': {'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips?limit=50'}, 'total_count': 1, 'floating_ips': [{'id': 'r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'crn': 'crn:v1:bluemix:public:is:us-south-1:a/0f0d916bcdeb41fc82e06b1b60b219b9::floating-ip:r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips/r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'address': '169.48.152.25', 'name': 'my-floating-ip-1-updated', 'status': 'available', 'created_at': '2021-05-05T13:41:41Z', 'zone': {'name': 'us-south-1', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1'}, 'resource_group': {'id': 'ea28d6d5de624c9e974fda9ecd3f4263', 'href': 'https://resource-controller.cloud.ibm.com/v2/resource_groups/ea28d6d5de624c9e974fda9ecd3f4263', 'name': 'Default'}}]}
+GET_FLOATING_IPS_RESPONSE = {"first": {"href": "https://us-south.iaas.cloud.ibm.com/v1/floating_ips?limit=50"}, "floating_ips": [{"address": "192.0.2.2", "created_at": "2019-01-28T12:08:05Z", "crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/floating_ips/4dd1852a-3373-46c0-9240-f9c7f0d0c1a3", "id": "4dd1852a-3373-46c0-9240-f9c7f0d0c1a3", "name": "my-floating-ip-1", "resource_group": {"href": "https://resource-controller.cloud.ibm.com/v2/resource_groups/4bbce614c13444cd8fc5e7e878ef8e21", "id": "4bbce614c13444cd8fc5e7e878ef8e21", "name": "Default"}, "status": "pending", "target": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances/f2a2ab09-0c9e-4b2d-a1cf-7425d1c834b9/network_interfaces/bd5f7dc3-93c7-4d3a-89b4-26c4cc364a2", "id": "bd5f7dc3-93c7-4d3a-89b4-26c4cc364a2", "name": "my-network-interface-1", "primary_ipv4_address": "10.0.1.9", "resource_type": "network_interface"}, "zone": {"href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1", "name": "us-south-1"} }, {"address": "198.51.100.1", "created_at": "2019-01-29T12:08:05Z", "crn": "crn:[...]", "href": "https://us-south.iaas.cloud.ibm.com/v1/floating_ips/64580c28-713a-4cda-9993-53bc6a529bb4", "id": "64580c28-713a-4cda-9993-53bc6a529bb4", "name": "my-floating-ip-2", "resource_group": {"href": "https://resource-controller.cloud.ibm.com/v2/resource_groups/4bbce614c13444cd8fc5e7e878ef8e21", "id": "4bbce614c13444cd8fc5e7e878ef8e21", "name": "Default"}, "status": "pending", "target": {"href": "https://us-south.iaas.cloud.ibm.com/v1/instances/f2a2ab09-0c9e-4b2d-a1cf-7425d1c834b9/network_interfaces/bd5f7dc3-93c7-4d3a-89b4-26c4cc364a32", "id": "bd5f7dc3-93c7-4d3a-89b4-26c4cc364", "name": "my-network-interface-1", "primary_ipv4_address": "10.0.1.10", "resource_type": "network_interface"}, "zone": {"href": "https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1", "name": "us-south-1"} } ], "limit": 50, "total_count": 2 }
+
+GET_FLOATING_IP_BY_ID_RESPONSE = GET_FLOATING_IPS_RESPONSE["floating_ips"][0]
 
 POST_FLOATING_IPS_RESPONSE = GET_FLOATING_IP_BY_ID_RESPONSE
 
-PATCH_FLOATING_IP_BY_ID_RESPONSE = {'id': 'r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'crn': 'crn:v1:bluemix:public:is:us-south-1:a/0f0d916bcdeb41fc82e06b1b60b219b9::floating-ip:r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/floating_ips/r006-e554cebe-3de3-40d3-b094-54dc2d8e6d8f', 'address': '169.48.152.25', 'name': 'my-floating-ip-1-updated', 'status': 'available', 'created_at': '2021-05-05T13:41:41Z', 'zone': {'name': 'us-south-1', 'href': 'https://us-south.iaas.cloud.ibm.com/v1/regions/us-south/zones/us-south-1'}, 'resource_group': {'id': 'ea28d6d5de624c9e974fda9ecd3f4263', 'href': 'https://resource-controller.cloud.ibm.com/v2/resource_groups/ea28d6d5de624c9e974fda9ecd3f4263', 'name': 'Default'}}
+PATCH_FLOATING_IP_BY_ID_RESPONSE = GET_FLOATING_IP_BY_ID_RESPONSE
+PATCH_FLOATING_IP_BY_ID_RESPONSE["name"] = "my-floating-ip-updated"

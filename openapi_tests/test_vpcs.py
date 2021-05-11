@@ -1,17 +1,17 @@
 import re
 from urllib.parse import parse_qsl, urlparse
 
-from openapi_tests import helpers
-from openapi_tests.helpers import (
-    API_ENDPOINT,
+from openapi_tests import _adapter
+from openapi_tests._helpers import (
     REQUIRED_PARAMS,
     RESOURCE_GROUP_ID_REGEX,
     SUBNET_NAME_REGEX,
     URL_REGEX,
     check_required_params,
     check_valid_vpc,
-    session,
 )
+
+from openapi_tests._adapter import API_ENDPOINT, session
 
 
 # TESTS STARTS HERE
@@ -33,7 +33,7 @@ def test_get_vpcs():
 
         if k == "limit":
             assert v.isdigit()
-            assert int(v) in range(1, 101)
+            assert 1 <= v <= 100
 
         elif k == "classic_access":
             assert v in ["true", "false"]
@@ -68,7 +68,7 @@ def test_get_vpcs():
 
 # GET /vpcs/id
 def test_vpc_by_id():
-    vpc_id = helpers.vpc_id
+    vpc_id = _adapter.vpc_id
     res = session.get(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-05-06&generation=2"
     )
@@ -117,7 +117,7 @@ def test_post_vpcs():
 
 # PATCH /vpcs/{id}
 def test_patch_vpc_by_id():
-    vpc_id = helpers.vpc_id
+    vpc_id = _adapter.vpc_id
     body = {"name": "test2-updated"}
 
     res = session.patch(
@@ -139,7 +139,7 @@ def test_patch_vpc_by_id():
 
 # DELETE /vpcs/{id}
 def test_delete_vpc_by_id():
-    vpc_id = helpers.vpc_id
+    vpc_id = _adapter.vpc_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/vpcs/{vpc_id}?version=2021-05-06&generation=2"

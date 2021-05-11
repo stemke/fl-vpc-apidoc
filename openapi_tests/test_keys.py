@@ -1,15 +1,15 @@
 import re
 from urllib.parse import parse_qsl, urlparse
 
-from openapi_tests import helpers
-from openapi_tests.helpers import (
-    API_ENDPOINT,
+from openapi_tests import _adapter
+from openapi_tests._helpers import (
     REQUIRED_PARAMS,
     SUBNET_NAME_REGEX,
     check_valid_key,
     check_required_params,
-    session,
 )
+
+from openapi_tests._adapter import API_ENDPOINT, session
 
 
 # TESTS STARTS HERE
@@ -38,7 +38,7 @@ def test_get_keys():
 
 # GET /keys/id
 def test_key_by_id():
-    key_id = helpers.key_id
+    key_id = _adapter.key_id
 
     res = session.get(
         f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-05-06&generation=2"
@@ -73,7 +73,7 @@ def test_post_keys():
 
 # PATCH /keys/{id}
 def test_patch_key_by_id():
-    key_id = helpers.key_id
+    key_id = _adapter.key_id
     body = {"name": "my-key-1-modified"}
 
     res = session.patch(
@@ -95,7 +95,7 @@ def test_patch_key_by_id():
 
 # DELETE /keys/{id}
 def test_delete_key_by_id():
-    key_id = helpers.key_id
+    key_id = _adapter.key_id
 
     res = session.delete(
         f"{API_ENDPOINT}/v1/keys/{key_id}?version=2021-05-06&generation=2"
