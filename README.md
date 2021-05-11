@@ -143,4 +143,5 @@ r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2",
 ### POST /v1/instances
 
 * no required payload specified on the api spec but they are actually required when making the requests. Although the example given shows some payoad parameters being passed in the request body.
-* To complete the creation of a sample instance, I needed to create a volume but i kept getting `token_missing` error. Although it worked for other api endpoints. What I did was went through the python IBM VPC SDK and I looked at the test for the instances and used the response from there instead.
+* To complete the creation of a sample instance, I needed to create a volume but i kept getting `token_missing` error. Although it worked for other api endpoints. What I did was went through the python IBM VPC SDK and I looked at the test for the instances and used the response from there instead. I found out the example was old so i stuck to the example response in the api spec.
+* `boot_volume_attachment` `zone`, and `primary_network_interface` are not present in the api spec description for the body data to pass in to the request but it is used in the curl example.

@@ -29,11 +29,10 @@ def test_get_instances():
         "vpc.name",
     ]
 
-    response = res.json()
     data = res.json()
     required_response_keys = ["first", "limit", "instances", "total_count"]
 
-    allowed_instance_keys = [
+    old_allowed_instance_keys = [
         "bandwidth",
         "boot_volume_attachment",
         "created_at",
@@ -54,6 +53,33 @@ def test_get_instances():
         "vpc",
         "zone",
     ]
+
+    allowed_instance_keys = [
+        "bandwidth",
+        "boot_volume_attachment",
+        "created_at",
+        "crn",
+        "dedicated_host",
+        "disks",
+        "href",
+        "id",
+        "image",
+        "memory",
+        "name",
+        "network_interfaces",
+        "placement_target",
+        "primary_network_interface",
+        "profile",
+        "placement_target",
+        "resource_group",
+        "status",
+        "status_reasons",
+        "vcpu",
+        "volume_attachments",
+        "vpc",
+        "zone",
+    ]
+
     optional_response_key = ["next"]
 
     for k, v in data.items():
@@ -84,72 +110,111 @@ def test_get_instances():
         check_valid_instance(instance)
 
 
-# # GET /instances/id
-# def test_key_by_id():
-#     key_id = helpers.key_id
+# GET /instances/id
+def test_key_by_id():
+    instance_id = helpers.instance_id
 
-#     res = session.get(
-#         f"{API_ENDPOINT}/v1/instances/{key_id}?version=2021-05-06&generation=2"
-#     )
+    res = session.get(
+        f"{API_ENDPOINT}/v1/instances/{instance_id}?version=2021-05-06&generation=2"
+    )
 
-#     check_required_params(res)
+    check_required_params(res)
 
-#     # testing response
-#     check_valid_key(res.json())
-
-
-# # POST /instances
-# def test_post_instances():
-#     body = {
-#         "name": "my-key-1",
-#         "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCwM/8slSaAsMkP91qWDKD20+ZNq6dLu+qoE/oglPwJJBxpDU/T0wJ2LmfHSsRUNxX9ZA/CMkHsFJ0Gbuqvz0lx4TPN4AGNIr5bWj4VZp2LXibQ3QJkhkK3qdhUIyTY34qtEea8UYviZUAmROe2MMTpYayxsbnTDMw/RJjQ/d3W9hPSGQl7XLmI8Qvpxg5OBuopVllzUOF00hYyLaqtmpr+DaXHt0AVHu3HfH07TDGrVlqbrKo+BPLxv7bOvVJ5z5Ab/H1KcrgiVipcCunqCK+wnLTSeeIQF7x/lclo/SvWalSj+zQ+GfipZpI5R5ZHpFkPAq8OLly6ErKsqnwN8H2r",
-#         "type": "rsa",
-#     }
-
-#     res = session.post(
-#         f"{API_ENDPOINT}/v1/instances?version=2021-05-06&generation=2", json=body
-#     )
-
-#     allowed_body_data = ["public_key", "name", "resource_group", "type"]
-
-#     for k, v in body.items():
-#         assert k in allowed_body_data
-
-#     check_required_params(res)
-#     check_valid_key(res.json())
+    # testing response
+    check_valid_instance(res.json())
 
 
-# # PATCH /instances/{id}
-# def test_patch_key_by_id():
-#     key_id = helpers.key_id
-#     body = {"name": "my-key-1-modified"}
+# POST /instances
+def test_post_instances():
+    body = {
+        "boot_volume_attachment": {
+            "volume": {
+                "encryption_key": {"crn": "crn:[...]"},
+                "name": "my-boot-volume",
+                "profile": {"name": "general-purpose"},
+            }
+        },
+        "image": {"id": "9aaf3bcb-dcd7-4de7-bb60-24e39ff9d366"},
+        "keys": [{"id": "363f6d70-0000-0001-0000-00000013b96c"}],
+        "name": "my-instance",
+        "placement_target": {"id": "0787-8c2a09be-ee18-4af2-8ef4-6a6060732221"},
+        "primary_network_interface": {
+            "name": "my-network-interface",
+            "subnet": {"id": "bea6a632-5e13-42a4-b4b8-31dc877abfe4"},
+        },
+        "profile": {"name": "bx2-2x8"},
+        "volume_attachments": [
+            {
+                "volume": {
+                    "capacity": 1000,
+                    "encryption_key": {"crn": "crn:[...]"},
+                    "name": "my-data-volume",
+                    "profile": {"name": "5iops-tier"},
+                }
+            }
+        ],
+        "vpc": {"id": "f0aae929-7047-46d1-92e1-9102b07a7f6f"},
+        "zone": {"name": "us-south-1"},
+    }
 
-#     res = session.patch(
-#         f"{API_ENDPOINT}/v1/instances/{key_id}?version=2021-05-06&generation=2", json=body
-#     )
+    res = session.post(
+        f"{API_ENDPOINT}/v1/instances?version=2021-05-06&generation=2", json=body
+    )
 
-#     assert re.search(r"v1/instances/(.*?)\?[vg]", res.url)
-#     check_required_params(res)
-#     data = res.json()
-#     name = data.get("name", "")
+    allowed_body_data = [
+        "keys",
+        "name",
+        "network_interfaces",
+        "placement_target",
+        "profile",
+        "resource_group",
+        "user_data",
+        "volume_attachments",
+        "vpc",
+        "image",
+        "boot_volume_attachment",
+        "primary_network_interface",
+        'zone',
+    ]
 
-#     assert "name" in body.instances()
-#     assert re.match(SUBNET_NAME_REGEX, name)
-#     assert 1 <= len(name) <= 63
-#     check_valid_key(data)
+    for k, v in body.items():
+        assert k in allowed_body_data
 
-#     assert data.get("name") == body.get("name")
+    check_required_params(res)
+    check_valid_instance(res.json())
 
 
-# # DELETE /instances/{id}
-# def test_delete_key_by_id():
-#     key_id = helpers.key_id
+# PATCH /instances/{id}
+def test_patch_key_by_id():
+    instance_id = helpers.instance_id
+    body = {"name": "my-instance-updated"}
 
-#     res = session.delete(
-#         f"{API_ENDPOINT}/v1/instances/{key_id}?version=2021-05-06&generation=2"
-#     )
+    res = session.patch(
+        f"{API_ENDPOINT}/v1/instances/{instance_id}?version=2021-05-06&generation=2", json=body
+    )
 
-#     check_required_params(res)
+    assert re.search(r"v1/instances/(.*?)\?[vg]", res.url)
+    check_required_params(res)
+    data = res.json()
+    name = data.get("name", "")
 
-#     assert re.search(r"v1/instances/(.*?)\?[vg]", res.url)
-#     assert res.status_code == 204
+    assert "name" in body.keys()
+    assert re.match(SUBNET_NAME_REGEX, name)
+    assert 1 <= len(name) <= 63
+    check_valid_instance(data)
+
+    assert data.get("name") == body.get("name")
+
+
+# DELETE /instances/{id}
+def test_delete_key_by_id():
+    instance_id = helpers.instance_id
+
+    res = session.delete(
+        f"{API_ENDPOINT}/v1/instances/{instance_id}?version=2021-05-06&generation=2"
+    )
+
+    check_required_params(res)
+
+    assert re.search(r"v1/instances/(.*?)\?[vg]", res.url)
+    assert res.status_code == 204
