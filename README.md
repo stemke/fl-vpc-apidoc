@@ -84,15 +84,8 @@ Examples:
 * `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/instances`
 * `POST`, `GET` (individual), `GET` (list), `PATCH`, and `DELETE` for `/floating_ips`
 
-## Results
 
-| method to test   | date tested | Github issue needed? | notes                                                                               |
-| ---------------- | ----------- | -------------------- | ----------------------------------------------------------------------------------- |
-| GET `/vpcs`      | 2021-04-07  | n/a                  | Gets a list of the VPCs. works as expected                                          |
-| GET `/vpcs/<id>` | 2021-04-07  | n/a                  | Get's a specific vpc using the id. works as expected                                |
-| POST `/vpcs/`    | 2021-04-07  | n/a                  | Creates a new VPC once the name is passes as json in the payload. works as expected |
-
-## Observations
+## Observations / Results
 
 * Documentation isn't very clear on how to use or generate `iam_token`
 * Documentation doesn't specify that the purpose of using the `apikey` is so that you can generate the `iam_token` and neither dpes it show how to do it.
