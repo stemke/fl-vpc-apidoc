@@ -127,7 +127,7 @@ r = requests.post(f"{API_ENDPOINT}/v1/vpcs?version=2021-05-06&generation=2",
 
 ### POST /v1/subnets
 
-* `ipv4_cidr_block` is provided in request body but the api specification does not have any information regarding it.
+* `ipv4_cidr_block` is provided in request body but the api specification does not set specify either `subnetByCIDR` or `subnetByTotalCount` as required. It looks like it’s optional so not really clear to user. Maybe perhaps it should be among the required fields at the top of the specification instead of being at the bottom among the optional fields
 
 ### GET /v1/keys
 
