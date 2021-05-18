@@ -20,27 +20,16 @@ RESOURCE_GROUP_ID_REGEX = r"^[0-9a-f]{32}$"
 IP_ADDRESS_REGEX = r"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
 
 
-RESPONSE_KEYS = [
-    "href",
-    "id",
-    "name"
-]
+RESPONSE_KEYS = ["href", "id", "name"]
 
-ID_KEYS = [
-    "id",
-    "href",
-    "crn"
-]
+ID_KEYS = ["id", "href", "crn"]
 
 NETWORK_ACL_KEYS = RESPONSE_KEYS + [
     "crn",
     "deleted",
 ]
 
-ROUTING_TABLE_KEYS = RESPONSE_KEYS + [
-    "resource_type",
-    "deleted"
-]
+ROUTING_TABLE_KEYS = RESPONSE_KEYS + ["resource_type", "deleted"]
 
 NET_KEYS = RESPONSE_KEYS + [
     "created_at",
@@ -80,12 +69,7 @@ INSTANCE_CODES = [
     "encryption_key_deleted",
 ]
 
-NET_STATUS = [
-    "available",
-    "deleting",
-    "failed",
-    "pending"
-]
+NET_STATUS = ["available", "deleting", "failed", "pending"]
 
 INSTANCE_STATUSES = [
     "deleting",
@@ -100,6 +84,7 @@ INSTANCE_STATUSES = [
     "stopped",
     "stopping",
 ]
+
 
 def check_valid_params(keys, param):
     for key, val in param.items():
@@ -170,7 +155,7 @@ def check_valid_vpc(vpc):
     for key in vpc.keys():
         assert key in VALID_VPC_KEYS
 
-    assert isinstance(vpc.get("classic_access"), bool)
+    assert str(vpc.get("classic_access")).lower() in ["true", "false"]
     assert is_date(vpc.get("created_at"))
     assert vpc.get("crn").startswith("crn:")
 
@@ -324,61 +309,61 @@ def check_valid_instance(ins):
     status_reasons = ins.get("status_reasons", [])
     for status_reason in status_reasons:
         for k, v in status_reason.items():
-            if k == 'code':
+            if k == "code":
                 assert v in [INSTANCE_CODES]
-                assert re.match(r'^[a-z]+(_[a-z]+)*$', v)
+                assert re.match(r"^[a-z]+(_[a-z]+)*$", v)
 
-            elif k == 'message':
+            elif k == "message":
                 assert v
 
-            elif k == 'more_info':
+            elif k == "more_info":
                 assert re.match(URL_REGEX, v)
 
     # vpcu not present in old response
-    vpcu = ins.get('vcpu')
-    assert vpcu.get('architecture')
-    assert vpcu.get('count') >= 1
+    vpcu = ins.get("vcpu")
+    assert vpcu.get("architecture")
+    assert vpcu.get("count") >= 1
 
-    volume_attachments = ins.get('volume_attachments')
+    volume_attachments = ins.get("volume_attachments")
     for attachment in volume_attachments:
-        check_valid_params(RESPONSE_KEYS + ['deleted', 'volume', 'device'], attachment)
+        check_valid_params(RESPONSE_KEYS + ["deleted", "volume", "device"], attachment)
         check_valid_params(NETWORK_ACL_KEYS, attachment.get("volume"))
 
-    check_valid_params(NETWORK_ACL_KEYS, ins.get('vpc'))
-    check_valid_params(['href', 'name'], ins.get('zone'))
+    check_valid_params(NETWORK_ACL_KEYS, ins.get("vpc"))
+    check_valid_params(["href", "name"], ins.get("zone"))
 
-    gpu = ins.get('gpu')
+    gpu = ins.get("gpu")
     if gpu:
-        assert gpu.get('count') >= 1
-        assert gpu.get('manufacturer')
-        assert gpu.get('memory') >= 1
-        assert gpu.get('model')
+        assert gpu.get("count") >= 1
+        assert gpu.get("manufacturer")
+        assert gpu.get("memory") >= 1
+        assert gpu.get("model")
 
-    image = ins.get('image')
+    image = ins.get("image")
     if image:
         check_valid_params(NETWORK_ACL_KEYS, image)
 
 
 def check_valid_floating_ip(ip):
-    check_valid_params(NET_KEYS + ['address', 'zone', 'target'], ip)
+    check_valid_params(NET_KEYS + ["address", "zone", "target"], ip)
 
     for k, v in ip.items():
-        if k == 'address':
+        if k == "address":
             assert re.match(IP_ADDRESS_REGEX, v)
 
-        elif k == 'resource_group':
+        elif k == "resource_group":
             check_valid_resource_group(v)
 
-        elif k == 'status':
+        elif k == "status":
             assert v in NET_STATUS
 
-        elif k == 'zone':
+        elif k == "zone":
             check_valid_params(["href", "name"], v)
 
-        elif k == 'target':
-            check_valid_params(ROUTING_TABLE_KEYS + ['primary_ipv4_address'], v)
-            assert v.get("resource_type") in ['network_interface']
-            assert re.match(IP_ADDRESS_REGEX, v.get('primary_ipv4_address'))
+        elif k == "target":
+            check_valid_params(ROUTING_TABLE_KEYS + ["primary_ipv4_address"], v)
+            assert v.get("resource_type") in ["network_interface"]
+            assert re.match(IP_ADDRESS_REGEX, v.get("primary_ipv4_address"))
 
 
 def is_date(string, fuzzy=False):

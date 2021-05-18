@@ -143,3 +143,6 @@ id_rs*
 queries.py
 report.html
 report.md
+~*.docx
+*.tmp
+queries.sh
